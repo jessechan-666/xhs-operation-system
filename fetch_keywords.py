@@ -27,6 +27,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 KEYWORDS_PATH = ROOT / "keywords.json"
 TEMPLATES_PATH = ROOT / "templates.json"
+HISTORY_PATH = ROOT / "history.json"
 TZ = timezone(timedelta(hours=8))
 
 BASE_KEYWORDS = {
@@ -197,8 +198,33 @@ def refresh_templates(templates: dict, dt: datetime) -> dict:
     return data
 
 
-def write_json(path: Path, data: dict) -> None:
+def write_json(path: Path, data: dict | list) -> None:
     path.write_text(json.dumps(data, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def load_history() -> list[dict]:
+    if not HISTORY_PATH.exists():
+        return []
+    try:
+        data = json.loads(HISTORY_PATH.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return []
+    return data if isinstance(data, list) else []
+
+
+def update_history(dt: datetime, keywords: dict) -> list[dict]:
+    today = dt.strftime("%Y-%m-%d")
+    entry = {
+        "date": today,
+        "updated_at": keywords["updated_at"],
+        "hot_search": keywords["hot_search"],
+        "activities": keywords["activities"],
+    }
+
+    history = [item for item in load_history() if item.get("date") != today]
+    history.append(entry)
+    history.sort(key=lambda item: item.get("date", ""), reverse=True)
+    return history[:90]
 
 
 def main() -> None:
@@ -209,12 +235,15 @@ def main() -> None:
         "activities": month_activities(dt)[:8],
     }
     write_json(KEYWORDS_PATH, keywords)
+    history = update_history(dt, keywords)
+    write_json(HISTORY_PATH, history)
 
     templates = load_templates()
     templates = refresh_templates(templates, dt)
     write_json(TEMPLATES_PATH, templates)
 
     print("keywords.json updated:", KEYWORDS_PATH)
+    print("history.json updated:", HISTORY_PATH)
     print("templates.json updated:", TEMPLATES_PATH)
     print("updated_at:", keywords["updated_at"])
 

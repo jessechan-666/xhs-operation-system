@@ -1001,6 +1001,141 @@
             left: 0;
             font-size: 10px;
         }
+
+        /* History Daily Report */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .history-item {
+            background: linear-gradient(180deg, #FFFDFE 0%, #FFF7FA 100%);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .history-item.collapsed .history-body {
+            display: none;
+        }
+
+        .history-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 16px 18px;
+            cursor: pointer;
+            background: linear-gradient(135deg, rgba(255, 107, 138, 0.08), rgba(255, 184, 201, 0.12));
+        }
+
+        .history-title-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .history-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .history-updated {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .history-toggle {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(255, 107, 138, 0.15);
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .history-item.collapsed .history-toggle {
+            transform: rotate(-90deg);
+        }
+
+        .history-body {
+            padding: 18px;
+            display: grid;
+            gap: 16px;
+        }
+
+        .history-section {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 14px;
+        }
+
+        .history-section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .history-category-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .history-category-card {
+            background: var(--bg-main);
+            border-radius: 12px;
+            padding: 12px;
+            border: 1px solid rgba(255, 107, 138, 0.08);
+        }
+
+        .history-category-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        .history-tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .history-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            font-size: 12px;
+            border: 1px solid rgba(255, 107, 138, 0.12);
+        }
+
+        .history-tag .rank {
+            font-weight: 700;
+        }
+
+        .history-empty {
+            text-align: center;
+            padding: 36px 20px;
+            color: var(--text-light);
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -1035,6 +1170,11 @@
         <div class="step-dot" data-step="5">
             <div class="dot">5</div>
             <span class="label">发布策略</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-dot" data-step="6">
+            <div class="dot">6</div>
+            <span class="label">📅 历史日报</span>
         </div>
     </div>
 
@@ -1173,6 +1313,32 @@
                     <span class="material-symbols-outlined" style="font-size:18px">arrow_back</span>
                     返回封面
                 </button>
+                <button class="btn btn-primary" onclick="goToStep(6)">
+                    查看历史日报
+                    <span class="material-symbols-outlined" style="font-size:18px">arrow_forward</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 6: History Daily Reports -->
+        <div class="step-panel" id="step6">
+            <div class="card">
+                <div class="card-title">
+                    <span class="material-symbols-outlined">history</span>
+                    历史日报
+                </div>
+                <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">
+                    汇总近 90 天的热搜日报，默认展开最新一条，方便随时回看趋势变化。
+                </p>
+                <div id="historyDailyList" class="history-list">
+                    <div class="history-empty">历史日报加载中...</div>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="goToStep(5)">
+                    <span class="material-symbols-outlined" style="font-size:18px">arrow_back</span>
+                    返回发布策略
+                </button>
                 <button class="btn btn-primary" onclick="resetAll()">
                     <span class="material-symbols-outlined" style="font-size:18px">refresh</span>
                     开始新一轮选品
@@ -1193,6 +1359,7 @@
     let hotSearchData = {};
     let activities = [];
     let templates = null;
+    let historyReports = [];
 
     // ============ STATE ============
     let currentStep = 1;
@@ -1213,36 +1380,68 @@
 
     async function loadExternalData() {
         const ts = Date.now();
+        await Promise.all([
+            loadKeywordsData(ts),
+            loadTemplatesData(ts),
+            loadHistoryData(ts)
+        ]);
+    }
+
+    async function loadKeywordsData(ts) {
         try {
-            // Load keywords
             const kwRes = await fetch('./keywords.json?t=' + ts);
             if (kwRes.ok) {
                 const kwData = await kwRes.json();
                 hotSearchData = kwData.hot_search || {};
                 activities = kwData.activities || [];
-                // Show update time
                 const statusEl = document.getElementById('dataStatus');
                 const timeEl = document.getElementById('dataUpdateTime');
                 statusEl.style.display = 'block';
                 timeEl.textContent = '数据已同步：' + (kwData.updated_at || '未知');
-                // Auto hide after 4 seconds
                 setTimeout(() => { statusEl.style.opacity = '0'; statusEl.style.transition = 'opacity 0.5s'; }, 4000);
                 setTimeout(() => { statusEl.style.display = 'none'; }, 4500);
+                return;
             }
+            throw new Error('keywords.json http ' + kwRes.status);
         } catch (e) {
             console.warn('keywords.json 加载失败，使用默认数据', e);
             loadFallbackKeywords();
         }
+    }
 
+    async function loadTemplatesData(ts) {
         try {
-            // Load templates
             const tplRes = await fetch('./templates.json?t=' + ts);
             if (tplRes.ok) {
                 templates = await tplRes.json();
+                return;
             }
+            throw new Error('templates.json http ' + tplRes.status);
         } catch (e) {
             console.warn('templates.json 加载失败，使用默认模板', e);
             templates = null;
+        }
+    }
+
+    async function loadHistoryData(ts) {
+        const container = document.getElementById('historyDailyList');
+        try {
+            const historyRes = await fetch('./history.json?t=' + ts);
+            if (historyRes.status === 404) {
+                historyReports = [];
+                container.innerHTML = '<div class="history-empty">暂无历史记录</div>';
+                return;
+            }
+            if (!historyRes.ok) {
+                throw new Error('history.json http ' + historyRes.status);
+            }
+            const data = await historyRes.json();
+            historyReports = Array.isArray(data) ? data : [];
+            renderHistoryReports();
+        } catch (e) {
+            console.warn('history.json 加载失败', e);
+            historyReports = [];
+            container.innerHTML = '<div class="history-empty">暂无历史记录</div>';
         }
     }
 
@@ -1358,6 +1557,88 @@
         } else {
             selectedActivities.push(name);
         }
+    }
+
+    // ============ HISTORY DAILY REPORTS ============
+    function renderHistoryReports() {
+        const container = document.getElementById('historyDailyList');
+        if (!historyReports.length) {
+            container.innerHTML = '<div class="history-empty">暂无历史记录</div>';
+            return;
+        }
+
+        const categoryLabels = {
+            earring: '耳饰',
+            ring: '戒指',
+            necklace: '项链'
+        };
+        const categoryOrder = ['earring', 'ring', 'necklace'];
+
+        container.innerHTML = historyReports.map((report, index) => {
+            const hotSearch = report.hot_search || {};
+            const activitiesHtml = (report.activities || []).map(act => `
+                <div class="activity-card" style="cursor:default;">
+                    <div class="activity-icon" style="background:${act.color || '#FFE4EC'}">${act.icon || '✨'}</div>
+                    <div class="activity-info">
+                        <div class="name">${act.name || '活动待补充'}</div>
+                        <div class="desc">${act.desc || ''}</div>
+                    </div>
+                </div>
+            `).join('') || '<div class="empty-hint">暂无热门活动</div>';
+
+            const categoryHtml = categoryOrder.map(category => {
+                const words = Array.isArray(hotSearch[category]) ? hotSearch[category].slice(0, 10) : [];
+                const tagsHtml = words.map((item, wordIndex) => `
+                    <span class="history-tag">
+                        <span class="rank">TOP${wordIndex + 1}</span>
+                        <span>${item.text || ''}</span>
+                    </span>
+                `).join('') || '<div class="empty-hint">暂无热搜词</div>';
+
+                return `
+                    <div class="history-category-card">
+                        <div class="history-category-name">${categoryLabels[category]}</div>
+                        <div class="history-tag-list">${tagsHtml}</div>
+                    </div>
+                `;
+            }).join('');
+
+            return `
+                <div class="history-item ${index === 0 ? '' : 'collapsed'}" data-history-index="${index}">
+                    <div class="history-header" onclick="toggleHistoryItem(${index})">
+                        <div class="history-title-wrap">
+                            <div class="history-title">${report.date || '未知日期'} 日报</div>
+                            <div class="history-updated">更新时间：${report.updated_at || '未知'}</div>
+                        </div>
+                        <div class="history-toggle">
+                            <span class="material-symbols-outlined">expand_more</span>
+                        </div>
+                    </div>
+                    <div class="history-body">
+                        <div class="history-section">
+                            <div class="history-section-title">
+                                <span class="material-symbols-outlined" style="font-size:18px;color:var(--primary)">local_fire_department</span>
+                                三大品类 Top10 热搜词
+                            </div>
+                            <div class="history-category-grid">${categoryHtml}</div>
+                        </div>
+                        <div class="history-section">
+                            <div class="history-section-title">
+                                <span class="material-symbols-outlined" style="font-size:18px;color:var(--warning)">celebration</span>
+                                热门活动列表
+                            </div>
+                            <div>${activitiesHtml}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function toggleHistoryItem(index) {
+        const item = document.querySelector(`[data-history-index="${index}"]`);
+        if (!item) return;
+        item.classList.toggle('collapsed');
     }
 
     // ============ STEP NAVIGATION ============
