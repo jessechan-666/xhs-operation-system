@@ -26,7 +26,7 @@ jobs:
 
       - name: Generate latest keywords.json and templates.json
         run: |
-          python output/github_actions/fetch_keywords.py
+          python fetch_keywords.py
           echo "分析口径：耳饰/戒指/项链 Top10 + 热门活动 + 笔记灵感方向；爆款参考条件=点赞>300且粉丝<=2000"
 
       - name: Show changed files
