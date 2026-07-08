@@ -1,0 +1,112 @@
+name: daily-xhs-sync
+
+on:
+  schedule:
+    # 每天北京时间 09:00 = UTC 01:00
+    - cron: '0 1 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Generate latest keywords.json and templates.json
+        run: |
+          python output/github_actions/fetch_keywords.py
+          echo "分析口径：耳饰/戒指/项链 Top10 + 热门活动 + 笔记灵感方向；爆款参考条件=点赞>300且粉丝<=2000"
+
+      - name: Show changed files
+        run: |
+          git status --short
+          echo "--- keywords preview ---"
+          head -n 20 output/keywords.json || true
+
+      - name: Commit and push changes
+        id: commit_push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add output/keywords.json output/templates.json
+          if git diff --cached --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "No data changes detected."
+          else
+            git commit -m "chore: daily sync keywords and templates"
+            git push
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Trigger Netlify deploy hook
+        if: steps.commit_push.outputs.changed == 'true'
+        run: |
+          curl -X POST "$NETLIFY_HOOK_URL"
+        env:
+          NETLIFY_HOOK_URL: ${{ secrets.NETLIFY_HOOK_URL }}
+
+      - name: Send Feishu success notification
+        if: success()
+        run: |
+          python - <<'PY'
+          import json, os, urllib.request
+          webhook = os.environ.get('FEISHU_WEBHOOK', '').strip()
+          if not webhook:
+              print('FEISHU_WEBHOOK not configured, skip notification.')
+              raise SystemExit(0)
+          changed = os.environ.get('CHANGED', 'false')
+          msg = {
+              "msg_type": "text",
+              "content": {
+                  "text": f"【小红书饰品日报同步成功】\n仓库：jessechan-666/xhs-operation-system\n数据是否更新：{changed}\n状态：GitHub Actions 已完成，Netlify 已触发部署\n通知对象：chenjingshi.kqxs"
+              }
+          }
+          req = urllib.request.Request(
+              webhook,
+              data=json.dumps(msg).encode('utf-8'),
+              headers={'Content-Type': 'application/json'}
+          )
+          with urllib.request.urlopen(req, timeout=20) as resp:
+              print('Feishu success notification sent:', resp.status)
+          PY
+        env:
+          FEISHU_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
+          CHANGED: ${{ steps.commit_push.outputs.changed }}
+
+      - name: Send Feishu failure notification
+        if: failure()
+        run: |
+          python - <<'PY'
+          import json, os, urllib.request
+          webhook = os.environ.get('FEISHU_WEBHOOK', '').strip()
+          if not webhook:
+              print('FEISHU_WEBHOOK not configured, skip notification.')
+              raise SystemExit(0)
+          msg = {
+              "msg_type": "text",
+              "content": {
+                  "text": "【小红书饰品日报同步失败】\n仓库：jessechan-666/xhs-operation-system\n状态：GitHub Actions 执行失败，请打开 Actions 日志排查。\n通知对象：chenjingshi.kqxs"
+              }
+          }
+          req = urllib.request.Request(
+              webhook,
+              data=json.dumps(msg).encode('utf-8'),
+              headers={'Content-Type': 'application/json'}
+          )
+          with urllib.request.urlopen(req, timeout=20) as resp:
+              print('Feishu failure notification sent:', resp.status)
+          PY
+        env:
+          FEISHU_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
