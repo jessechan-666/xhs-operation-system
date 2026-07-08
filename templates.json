@@ -1,0 +1,149 @@
+{
+  "updated_at": "2026-07-08 10:00:00",
+  "version": "v2.1",
+  "directions": [
+    {
+      "id": "pain",
+      "label": "痛点场景",
+      "desc": "针对用户真实困扰（如无耳洞、夹耳痛）提供解决方案型内容"
+    },
+    {
+      "id": "visual",
+      "label": "穿搭种草",
+      "desc": "视觉吸引力为主，通过搭配效果和上脸展示引发购买欲"
+    },
+    {
+      "id": "gift",
+      "label": "送礼/情感",
+      "desc": "以情感场景（节日/闺蜜/自我奖励）为切入点"
+    }
+  ],
+  "title_formulas": {
+    "pain": [
+      "没耳洞也能美！这款{shortName}绝了😭",
+      "{shortName}戴一天不疼！无耳洞姐妹冲",
+      "谁懂！没耳洞终于找到不疼的{shortName}",
+      "无耳洞救星！{shortName}夹一天都没感觉",
+      "找了好久！终于有不夹耳的{shortName}了"
+    ],
+    "visual": [
+      "戴上脸小一圈❗{shortName}太绝了",
+      "一秒提气质✨{shortName}上脸效果绝",
+      "{shortName}显脸小！同事都在问链接",
+      "素颜戴也好看！{shortName}氛围感拉满",
+      "这个{shortName}谁戴谁好看 不挑人！"
+    ],
+    "gift": [
+      "{activity}送这个！收到直接尖叫🎁",
+      "送闺蜜{shortName}！她说比想象中美",
+      "{activity}不知道送啥？这个绝对不踩雷",
+      "自己奖励自己✨入了这个{shortName}",
+      "送女生{shortName}准没错！仪式感满满"
+    ]
+  },
+  "hook_sentences": {
+    "pain": [
+      "姐妹们！谁懂啊！！！",
+      "没有耳洞但又超想戴好看的耳饰！",
+      "之前买过很多耳夹，要么夹得耳朵疼💀 要么戴一会就掉了...",
+      "无耳洞星人终于被我等到了！！",
+      "夹耳痛的噩梦终于结束了！！！"
+    ],
+    "visual": [
+      "最近发现一个穿搭小心机💡",
+      "选对耳饰真的可以修饰脸型！！",
+      "一个耳饰改变整体气质不是说说而已✨",
+      "同事问我最近怎么变好看了 就是换了这个！",
+      "不化妆也能有氛围感的秘密武器来了！"
+    ],
+    "gift": [
+      "{activity}快到了！还在纠结送什么礼物？",
+      "被问了八百遍闺蜜生日送什么 今天统一回复！",
+      "送礼天花板来了！！拆开的瞬间超有仪式感🎀",
+      "辛苦了那么久 是时候奖励自己一个小礼物了✨",
+      "比花束实用比红包有心的礼物 就是它了！"
+    ]
+  },
+  "body_templates": {
+    "pain": [
+      {
+        "id": "pain_v1",
+        "structure": "{hook}\n\n之前买过很多耳夹，要么夹得耳朵疼💀\n要么戴一会就掉了...\n\n直到我发现了这款【{productName}】！\n✅ {sellingPoints}\n✅ 戴一整天都不会疼\n✅ 价格才{priceRange}，真的太香了\n\n我已经连续戴了一周了！\n不管是上班通勤还是约会都很搭～\n素颜戴也超好看，显得整个人精致了好多✨\n\n{audience}冲它就对了！\n你们觉得好看的话记得点赞收藏呀～\n评论区告诉我你们想看什么款式？"
+      },
+      {
+        "id": "pain_v2",
+        "structure": "{hook}\n\n认真说！没耳洞的姐妹不要再将就了😭\n\n我之前的耳夹：\n❌ 夹2小时耳垂发红\n❌ 跑步走路会掉\n❌ 看起来像夹了个夹子\n\n换了这款【{productName}】之后：\n✅ {sellingPoints}\n✅ 一整天忘记自己戴了耳夹\n✅ 朋友都以为我打了耳洞\n\n价格{priceRange}真的太良心了！\n{audience}闭眼入！不好看来找我\n\n想看更多款式的评论区扣1！"
+      },
+      {
+        "id": "pain_v3",
+        "structure": "{hook}\n\n我是真的找了很久很久！！\n\n无耳洞女生的痛：\n· 好看的耳饰都是耳钉款😭\n· 耳夹不是太紧就是太丑\n· 戴久了耳垂都红了\n\n这款【{productName}】完美解决！\n💎 {sellingPoints}\n💎 超轻超舒服 忘记在戴\n💎 {priceRange} 学生党也无压力\n\n我已经被种草三个颜色了哈哈\n{audience}真的可以冲！\n\n收藏这篇 下次买饰品不迷路💕"
+      }
+    ],
+    "visual": [
+      {
+        "id": "visual_v1",
+        "structure": "{hook}\n\n这款【{productName}】我必须安利给所有人！\n\n🌟 上脸效果：\n垂坠感刚刚好，显得脸小了一圈\n{sellingPoints}，质感满满\n\n🌟 搭配建议：\n· 白T + 牛仔裤 → 日常减龄\n· 衬衫 + 西裤 → 通勤精致\n· 碎花裙 → 温柔气质拉满\n\n🌟 入手tips：\n价格{priceRange}，性价比超高！\n{audience}闭眼入就对了～\n\n📸 看图感受一下上脸效果！\n你们最喜欢哪套搭配？评论区聊聊～"
+      },
+      {
+        "id": "visual_v2",
+        "structure": "{hook}\n\n今天分享我的显脸小秘诀💡\n不是修容 不是发型 是——选对耳饰！\n\n这款【{productName}】上脸真的绝！\n\n📐 为什么显脸小：\n· 垂坠设计拉长脸部线条\n· {sellingPoints}\n· 视觉重心下移，脸自然显小\n\n👗 搭配公式：\n· 扎马尾 → 清爽显瘦\n· 披肩发 → 温柔气质\n· 半丸子头 → 甜酷减龄\n\n{priceRange}就能get的小心机✨\n{audience}放心冲！\n\n你们是什么脸型？评论区聊聊适合的耳饰类型～"
+      },
+      {
+        "id": "visual_v3",
+        "structure": "{hook}\n\n7天穿搭不重样 靠的就是换耳饰！\n\n今天要安利的这款【{productName}】：\n\n✨ 为什么买它：\n{sellingPoints}\n百搭程度超出预期！\n\n📸 一周穿搭实测：\n周一 衬衫通勤 → 精致不over\n周三 卫衣休闲 → 提升质感\n周五 约会小裙子 → 氛围感满分\n\n💰 性价比：{priceRange}\n{audience}这个价格真的不用犹豫！\n\n最喜欢哪天的搭配？评论区1234选一个！"
+      }
+    ],
+    "gift": [
+      {
+        "id": "gift_v1",
+        "structure": "{hook}\n\n看这里！！这款【{productName}】绝对是送礼天花板🎀\n\n💝 为什么推荐：\n· {sellingPoints}，送谁都不会出错\n· 包装精致，拆开的一瞬间超有仪式感\n· {priceRange}的价格，但看起来完全不止这个价！\n\n💝 适合送给：\n· 闺蜜/姐妹 → 友情限定款\n· 女朋友/老婆 → 日常小惊喜\n· 自己 → 辛苦了奖励自己！\n\n收到的人都说比想象中好看100倍😍\n\n姐妹们你们觉得送什么场合最合适？\n评论区一起讨论鸭～"
+      },
+      {
+        "id": "gift_v2",
+        "structure": "{hook}\n\n闺蜜收到这个【{productName}】直接尖叫了😂\n\n🎁 送礼报告：\n· 东西：{productName}\n· 价格：{priceRange}（不贵但很有面儿）\n· 收到反应：拆开就戴上了！！\n\n🌟 为什么选它：\n{sellingPoints}\n不挑人 谁戴都好看\n包装精致 仪式感拉满\n\n📋 适合场景：\n{activity} / 生日 / 纪念日 / 随便送\n{audience}收到都会开心的那种！\n\n你们最近有需要送礼的场合吗？\n评论区告诉我 帮你们推荐～"
+      },
+      {
+        "id": "gift_v3",
+        "structure": "{hook}\n\n我的送礼清单又更新了！\n这次的{activity}礼物我选了这款【{productName}】\n\n💕 选它的理由：\n· 颜值高！{sellingPoints}\n· 价格友好 {priceRange}\n· 适合所有风格的女生\n· 包装拆开的仪式感真的绝了\n\n🎀 送礼小tips：\n· 可以搭配一张手写卡片\n· 选对方喜欢的颜色更加分\n· 送的时候说「看到就想到你」\n\n{audience}存着这篇 下次送礼不用愁！\n\n你们收到过最感动的礼物是什么？评论区聊聊💬"
+      }
+    ]
+  },
+  "tag_templates": {
+    "pain": [
+      "{hotword1}",
+      "{hotword2}",
+      "{hotword3}",
+      "{productName}",
+      "耳夹推荐",
+      "无耳洞",
+      "{point1}",
+      "{audience1}",
+      "平价饰品",
+      "{priceRange}好物"
+    ],
+    "visual": [
+      "{hotword1}",
+      "{hotword2}",
+      "{hotword3}",
+      "{productName}",
+      "显脸小",
+      "穿搭搭配",
+      "气质耳饰",
+      "{audience1}",
+      "{activity}",
+      "每日穿搭"
+    ],
+    "gift": [
+      "{hotword1}",
+      "{hotword2}",
+      "{productName}",
+      "{activity}礼物",
+      "送礼推荐",
+      "女生礼物",
+      "闺蜜礼物",
+      "仪式感",
+      "{audience1}",
+      "精致生活"
+    ]
+  }
+}
