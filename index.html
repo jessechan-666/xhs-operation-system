@@ -69,6 +69,49 @@
             font-weight: 300;
         }
 
+        /* Top Navigation */
+        .top-nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px;
+            background: white;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 92px;
+            z-index: 90;
+        }
+
+        .nav-tab {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            border: 1.5px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-tab:hover {
+            border-color: var(--secondary);
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 6px 18px rgba(255, 107, 138, 0.28);
+        }
+
         /* Step Indicator */
         .step-indicator {
             display: flex;
@@ -79,6 +122,10 @@
             border-bottom: 1px solid var(--border);
             overflow-x: auto;
             gap: 4px;
+        }
+
+        .step-indicator.hidden {
+            display: none;
         }
 
         .step-dot {
@@ -1145,6 +1192,16 @@
         <p>专注选品，内容生产与流量获取交给系统</p>
     </div>
 
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <button class="nav-tab active" data-view="main" onclick="goToMain()">
+            🏠 首页/主功能
+        </button>
+        <button class="nav-tab" data-view="history" onclick="goToHistory()">
+            📅 历史日报
+        </button>
+    </div>
+
     <!-- Step Indicator -->
     <div class="step-indicator">
         <div class="step-dot active" data-step="1">
@@ -1170,11 +1227,6 @@
         <div class="step-dot" data-step="5">
             <div class="dot">5</div>
             <span class="label">发布策略</span>
-        </div>
-        <div class="step-connector"></div>
-        <div class="step-dot" data-step="6">
-            <div class="dot">6</div>
-            <span class="label">📅 历史日报</span>
         </div>
     </div>
 
@@ -1313,7 +1365,7 @@
                     <span class="material-symbols-outlined" style="font-size:18px">arrow_back</span>
                     返回封面
                 </button>
-                <button class="btn btn-primary" onclick="goToStep(6)">
+                <button class="btn btn-primary" onclick="goToHistory()">
                     查看历史日报
                     <span class="material-symbols-outlined" style="font-size:18px">arrow_forward</span>
                 </button>
@@ -1335,9 +1387,9 @@
                 </div>
             </div>
             <div class="btn-group">
-                <button class="btn btn-secondary" onclick="goToStep(5)">
+                <button class="btn btn-secondary" onclick="goToMain()">
                     <span class="material-symbols-outlined" style="font-size:18px">arrow_back</span>
-                    返回发布策略
+                    返回主功能
                 </button>
                 <button class="btn btn-primary" onclick="resetAll()">
                     <span class="material-symbols-outlined" style="font-size:18px">refresh</span>
@@ -1363,6 +1415,7 @@
 
     // ============ STATE ============
     let currentStep = 1;
+    let currentView = 'main';
     let selectedHotWords = [];
     let selectedActivities = [];
     let currentCategory = 'earring';
@@ -1376,6 +1429,8 @@
         initTagChips();
         initCategoryTabs();
         initCustomPointInput();
+        updateTopNav();
+        updateStepIndicator();
     });
 
     async function loadExternalData() {
@@ -1642,23 +1697,64 @@
     }
 
     // ============ STEP NAVIGATION ============
-    function goToStep(step) {
-        if (step === 2 && !validateStep1()) return;
-        
-        currentStep = step;
-        document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
-        document.getElementById('step' + step).classList.add('active');
+    function activatePanel(panelId) {
+        document.querySelectorAll('.step-panel').forEach(panel => panel.classList.remove('active'));
+        const targetPanel = document.getElementById(panelId);
+        if (targetPanel) {
+            targetPanel.classList.add('active');
+        }
+    }
+
+    function updateTopNav() {
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.classList.toggle('active', tab.dataset.view === currentView);
+        });
+    }
+
+    function updateStepIndicator() {
+        const indicator = document.querySelector('.step-indicator');
+        indicator.classList.toggle('hidden', currentView !== 'main');
 
         document.querySelectorAll('.step-dot').forEach((dot, i) => {
             dot.classList.remove('active', 'completed');
-            if (i + 1 === step) dot.classList.add('active');
-            else if (i + 1 < step) dot.classList.add('completed');
+            if (i + 1 === currentStep) dot.classList.add('active');
+            else if (i + 1 < currentStep) dot.classList.add('completed');
         });
 
         document.querySelectorAll('.step-connector').forEach((conn, i) => {
-            conn.classList.toggle('completed', i + 1 < step);
+            conn.classList.toggle('completed', i + 1 < currentStep);
         });
+    }
 
+    function setTopView(view, targetStep = currentStep) {
+        currentView = view;
+        if (view === 'history') {
+            activatePanel('step6');
+        } else {
+            currentStep = targetStep;
+            activatePanel('step' + currentStep);
+        }
+        updateTopNav();
+        updateStepIndicator();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goToMain(step = currentStep) {
+        setTopView('main', step);
+    }
+
+    function goToHistory() {
+        setTopView('history');
+    }
+
+    function goToStep(step) {
+        if (step === 2 && !validateStep1()) return;
+
+        currentStep = step;
+        currentView = 'main';
+        activatePanel('step' + step);
+        updateTopNav();
+        updateStepIndicator();
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
