@@ -592,6 +592,7 @@
             border-radius: var(--radius-sm);
             padding: 16px;
             margin-top: 12px;
+            border: 1px solid rgba(255, 159, 184, 0.22);
         }
 
         .cover-suggestion h4 {
@@ -623,6 +624,125 @@
 
         .cover-detail-item .value {
             color: var(--text-primary);
+        }
+
+        .cover-extend {
+            margin-top: 14px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .cover-preview-card,
+        .cover-prompt-card {
+            background: rgba(255, 255, 255, 0.82);
+            border-radius: 14px;
+            border: 1px solid rgba(255, 159, 184, 0.18);
+            padding: 14px;
+            box-shadow: 0 4px 14px rgba(255, 107, 138, 0.08);
+        }
+
+        .cover-subtitle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        .cover-image-shell {
+            position: relative;
+            overflow: hidden;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #FFF3F6 0%, #FFE8F0 100%);
+            min-height: 260px;
+            border: 1px dashed rgba(255, 107, 138, 0.28);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cover-image-shell img {
+            width: 100%;
+            aspect-ratio: 3 / 4;
+            object-fit: cover;
+            display: block;
+            background: #FFF8FA;
+        }
+
+        .cover-image-status {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 13px;
+            background: linear-gradient(135deg, rgba(255, 248, 250, 0.95), rgba(255, 236, 242, 0.95));
+        }
+
+        .cover-image-status.hidden {
+            display: none;
+        }
+
+        .cover-image-status .spinner {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 107, 138, 0.18);
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+
+        .cover-image-status.error .spinner {
+            display: none;
+        }
+
+        .cover-image-status.error {
+            color: var(--text-secondary);
+        }
+
+        .cover-image-caption {
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .cover-prompt-text {
+            background: #FFFDFE;
+            border: 1px solid rgba(255, 159, 184, 0.22);
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 12px;
+            color: var(--text-primary);
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .cover-prompt-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .cover-prompt-tip {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         /* Strategy Section */
@@ -1183,9 +1303,188 @@
             color: var(--text-light);
             font-size: 14px;
         }
+
+        /* Password Gate */
+        body.auth-locked {
+            overflow: hidden;
+        }
+
+        .password-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background:
+                radial-gradient(circle at 18% 18%, rgba(255, 184, 201, 0.55), transparent 34%),
+                radial-gradient(circle at 82% 76%, rgba(255, 107, 138, 0.34), transparent 36%),
+                linear-gradient(135deg, rgba(255, 248, 250, 0.97), rgba(255, 228, 236, 0.98));
+            backdrop-filter: blur(18px);
+        }
+
+        .password-overlay.hidden {
+            display: none;
+        }
+
+        .password-card {
+            width: min(420px, 100%);
+            padding: 34px 30px 30px;
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.86);
+            border: 1px solid rgba(255, 107, 138, 0.18);
+            box-shadow: 0 24px 70px rgba(255, 107, 138, 0.28);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: authCardIn 0.48s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .password-card::before {
+            content: '';
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            top: -88px;
+            right: -70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 107, 138, 0.22), rgba(255, 184, 201, 0.16));
+        }
+
+        .password-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 24px;
+            color: white;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            box-shadow: 0 12px 28px rgba(255, 107, 138, 0.32);
+            position: relative;
+            z-index: 1;
+        }
+
+        .password-icon .material-symbols-outlined {
+            font-size: 34px;
+        }
+
+        .password-card h2 {
+            font-size: 23px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .password-card p {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-bottom: 22px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .password-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 15px 16px;
+            border-radius: 16px;
+            border: 1.5px solid var(--border);
+            background: rgba(255, 248, 250, 0.9);
+            color: var(--text-primary);
+            font-size: 15px;
+            outline: none;
+            transition: var(--transition);
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .password-input:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(255, 107, 138, 0.12);
+        }
+
+        .password-submit {
+            border: none;
+            cursor: pointer;
+            padding: 14px 18px;
+            border-radius: 16px;
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            box-shadow: 0 10px 24px rgba(255, 107, 138, 0.28);
+            transition: var(--transition);
+        }
+
+        .password-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(255, 107, 138, 0.34);
+        }
+
+        .password-error {
+            min-height: 18px;
+            color: var(--primary-dark);
+            font-size: 13px;
+            font-weight: 600;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .password-error.show {
+            opacity: 1;
+        }
+
+        .password-card.shake {
+            animation: authShake 0.42s ease-in-out;
+        }
+
+        @keyframes authCardIn {
+            from { opacity: 0; transform: translateY(18px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes authShake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-10px); }
+            40% { transform: translateX(9px); }
+            60% { transform: translateX(-7px); }
+            80% { transform: translateX(5px); }
+        }
     </style>
 </head>
-<body>
+<body class="auth-locked">
+    <!-- Password Gate -->
+    <div class="password-overlay" id="passwordOverlay" role="dialog" aria-modal="true" aria-labelledby="passwordTitle">
+        <div class="password-card" id="passwordCard">
+            <div class="password-icon">
+                <span class="material-symbols-outlined">lock</span>
+            </div>
+            <h2 id="passwordTitle">访问验证</h2>
+            <p>请输入访问密码，解锁饰品博主智能运营系统</p>
+            <form class="password-form" id="passwordForm">
+                <input class="password-input" id="passwordInput" type="password" placeholder="请输入密码" autocomplete="current-password" aria-label="访问密码">
+                <button class="password-submit" type="submit">进入系统</button>
+                <div class="password-error" id="passwordError" aria-live="polite">密码错误，请重试</div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App (hidden until password verified) -->
+    <div id="main-app" style="display:none;">
+
     <!-- Header -->
     <div class="header">
         <h1>✨ 饰品博主智能运营系统</h1>
@@ -1406,7 +1705,53 @@
         <span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle;color:var(--success)">cloud_done</span>
         <span id="dataUpdateTime">数据加载中...</span>
     </div>
+    </div><!-- /main-app -->
     <script>
+    // ============ PASSWORD GATE ============
+    (function initPasswordGate() {
+        const PASSWORD = 'xhs2026';
+        const SESSION_KEY = 'xhs_system_authenticated';
+        const overlay = document.getElementById('passwordOverlay');
+        const card = document.getElementById('passwordCard');
+        const form = document.getElementById('passwordForm');
+        const input = document.getElementById('passwordInput');
+        const error = document.getElementById('passwordError');
+        const mainContainer = document.getElementById('main-app');
+
+        function unlock() {
+            sessionStorage.setItem(SESSION_KEY, 'true');
+            overlay.classList.add('hidden');
+            document.body.classList.remove('auth-locked');
+            if (mainContainer) {
+                mainContainer.style.display = '';
+            }
+        }
+
+        function showError() {
+            error.classList.add('show');
+            card.classList.remove('shake');
+            void card.offsetWidth;
+            card.classList.add('shake');
+            input.select();
+            input.focus();
+        }
+
+        if (sessionStorage.getItem(SESSION_KEY) === 'true') {
+            unlock();
+            return;
+        }
+
+        input.focus();
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            if (input.value === PASSWORD) {
+                unlock();
+            } else {
+                showError();
+            }
+        });
+    })();
+
     // ============ DATA (loaded from external files) ============
     let hotSearchData = {};
     let activities = [];
@@ -1977,6 +2322,136 @@
         });
     }
     // ============ COVER SUGGESTIONS (Step 4) ============
+    function escapeHtml(str = '') {
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function buildCoverImagePrompt(cover, form) {
+        const productName = form.name || 'fashion jewelry';
+        return [
+            'Xiaohongshu style jewelry cover photo',
+            productName,
+            'pink and cream background',
+            'flat lay or hanging composition',
+            'product-focused',
+            'soft natural light',
+            'clean feminine styling',
+            'premium accessory photography',
+            'editorial still life',
+            cover.layout,
+            cover.style,
+            cover.tip,
+            `headline feeling: ${cover.mainText}`,
+            'high detail, high quality, no watermark, no text overlay'
+        ].join(', ');
+    }
+
+    function buildBilingualCoverPrompt(cover, form) {
+        const productName = form.name || '饰品';
+        const englishPrompt = [
+            'Xiaohongshu style jewelry cover',
+            `highlight the product ${productName}`,
+            'pink / cream background',
+            'soft natural light',
+            'flat lay or hanging composition',
+            'clean premium styling',
+            'feminine mood',
+            'close-up accessory photography',
+            'high quality, detailed texture, no watermark, no text overlay',
+            `headline mood: ${cover.mainText}`,
+            `supporting caption mood: ${cover.subText}`
+        ].join(', ');
+
+        const chinesePrompt = [
+            '小红书风格饰品封面',
+            `突出产品主体：${productName}`,
+            '粉色 / 奶油色背景',
+            '自然柔光',
+            '平铺或悬挂构图',
+            '画面干净高级',
+            '少女感与精致感并存',
+            '饰品近景特写',
+            '高质量、质感清晰、无水印、无额外文字',
+            `封面情绪参考：${cover.mainText}`,
+            `副标题氛围参考：${cover.subText}`
+        ].join('，');
+
+        return `中文 Prompt：${chinesePrompt}\n\nEnglish Prompt: ${englishPrompt}`;
+    }
+
+    function setCoverImageState(imgId, statusId, type, message) {
+        const img = document.getElementById(imgId);
+        const status = document.getElementById(statusId);
+        if (!img || !status) return;
+
+        if (type === 'loading') {
+            img.style.display = 'none';
+            status.className = 'cover-image-status';
+            status.innerHTML = `
+                <div class="spinner"></div>
+                <div>${message || 'AI 正在生成参考图，请稍候...'}</div>
+            `;
+            return;
+        }
+
+        if (type === 'error') {
+            img.style.display = 'none';
+            status.className = 'cover-image-status error';
+            status.innerHTML = `
+                <span class="material-symbols-outlined" style="font-size:28px;color:var(--primary);">broken_image</span>
+                <div>${message || '参考图加载失败了，稍后再试试或直接复制 Prompt 去生成。'}</div>
+            `;
+            return;
+        }
+
+        img.style.display = 'block';
+        status.className = 'cover-image-status hidden';
+        status.innerHTML = '';
+    }
+
+    function loadCoverReferenceImage(index, prompt) {
+        const imgId = `coverImage${index}`;
+        const statusId = `coverImageStatus${index}`;
+        const img = document.getElementById(imgId);
+        if (!img) return;
+
+        setCoverImageState(imgId, statusId, 'loading', 'AI 正在生成参考图，请稍候...');
+        img.onload = () => setCoverImageState(imgId, statusId, 'success');
+        img.onerror = () => setCoverImageState(imgId, statusId, 'error');
+        img.src = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=768&height=1024&seed=${index + 11}&model=flux&nologo=true`;
+    }
+
+    function copyPrompt(text, btn) {
+        const resetBtn = () => {
+            setTimeout(() => {
+                btn.classList.remove('copied');
+                btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px">content_copy</span> 一键复制 Prompt';
+            }, 2000);
+        };
+
+        const onSuccess = () => {
+            btn.classList.add('copied');
+            btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px">check</span> 已复制！';
+            showToast('Prompt 已复制！');
+            resetBtn();
+        };
+
+        navigator.clipboard.writeText(text).then(onSuccess).catch(() => {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            onSuccess();
+        });
+    }
+
     function renderCoverSuggestions() {
         const form = getFormData();
         const container = document.getElementById('coverResult');
@@ -2009,7 +2484,11 @@
                 style: '暖调柔光，花瓣/丝带等氛围道具，突出精致包装和质感',
                 tip: '产品放在礼盒/鲜花旁，营造节日仪式感氛围'
             }
-        ];
+        ].map(cover => ({
+            ...cover,
+            imagePrompt: buildCoverImagePrompt(cover, form),
+            bilingualPrompt: buildBilingualCoverPrompt(cover, form)
+        }));
 
         container.innerHTML = `
             <div class="card">
@@ -2018,7 +2497,7 @@
                     封面设计建议
                 </div>
                 <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">
-                    针对 3 条笔记方向，分别给出最佳封面方案 👇
+                    针对 3 条笔记方向，分别给出最佳封面方案，并附上 AI 参考图与可直接复制的双语 Prompt 👇
                 </p>
                 ${covers.map((c, i) => `
                     <div class="cover-suggestion" style="margin-bottom:12px;">
@@ -2029,29 +2508,61 @@
                         <div class="cover-detail">
                             <div class="cover-detail-item">
                                 <span class="label">构图方式</span>
-                                <span class="value">${c.layout}</span>
+                                <span class="value">${escapeHtml(c.layout)}</span>
                             </div>
                             <div class="cover-detail-item">
                                 <span class="label">封面大字</span>
-                                <span class="value" style="font-weight:600;color:var(--primary)">${c.mainText}</span>
+                                <span class="value" style="font-weight:600;color:var(--primary)">${escapeHtml(c.mainText)}</span>
                             </div>
                             <div class="cover-detail-item">
                                 <span class="label">封面小字</span>
-                                <span class="value">${c.subText}</span>
+                                <span class="value">${escapeHtml(c.subText)}</span>
                             </div>
                             <div class="cover-detail-item">
                                 <span class="label">视觉风格</span>
-                                <span class="value">${c.style}</span>
+                                <span class="value">${escapeHtml(c.style)}</span>
                             </div>
                             <div class="cover-detail-item">
                                 <span class="label">拍摄建议</span>
-                                <span class="value">${c.tip}</span>
+                                <span class="value">${escapeHtml(c.tip)}</span>
+                            </div>
+                        </div>
+                        <div class="cover-extend">
+                            <div class="cover-preview-card">
+                                <div class="cover-subtitle">
+                                    <span class="material-symbols-outlined" style="font-size:16px">auto_awesome</span>
+                                    AI 生成参考图
+                                </div>
+                                <div class="cover-image-shell">
+                                    <img id="coverImage${i}" alt="笔记${i + 1} 封面参考图" style="display:none;">
+                                    <div id="coverImageStatus${i}" class="cover-image-status">
+                                        <div class="spinner"></div>
+                                        <div>AI 正在生成参考图，请稍候...</div>
+                                    </div>
+                                </div>
+                                <div class="cover-image-caption">参考图由 Pollinations.ai 生成，用于帮助你快速确认画面方向。</div>
+                            </div>
+                            <div class="cover-prompt-card">
+                                <div class="cover-subtitle">
+                                    <span class="material-symbols-outlined" style="font-size:16px">content_copy</span>
+                                    Midjourney / 即梦 AI 双语 Prompt
+                                </div>
+                                <div class="cover-prompt-text">${escapeHtml(c.bilingualPrompt)}</div>
+                                <div class="cover-prompt-actions">
+                                    <span class="cover-prompt-tip">适合继续拿去做二次精修或换模型生成。</span>
+                                    <button class="copy-btn" onclick="copyPrompt(${JSON.stringify(c.bilingualPrompt).replace(/"/g, '&quot;')}, this)">
+                                        <span class="material-symbols-outlined" style="font-size:16px">content_copy</span>
+                                        一键复制 Prompt
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 `).join('')}
             </div>
         `;
+
+        covers.forEach((cover, index) => loadCoverReferenceImage(index, cover.imagePrompt));
     }
 
     // ============ PUBLISHING STRATEGY (Step 5) ============
