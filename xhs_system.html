@@ -1,0 +1,2856 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>小红书饰品博主智能运营系统</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+    <style>
+        :root {
+            --primary: #FF6B8A;
+            --primary-light: #FFE4EC;
+            --primary-dark: #E84D6E;
+            --secondary: #FF9FB8;
+            --accent: #FFB8C9;
+            --bg-main: #FFF8FA;
+            --bg-card: #FFFFFF;
+            --text-primary: #2D2D3A;
+            --text-secondary: #6B6B80;
+            --text-light: #9B9BAF;
+            --border: #F0E4E8;
+            --success: #4CAF7D;
+            --warning: #FFB347;
+            --shadow-sm: 0 2px 8px rgba(255, 107, 138, 0.08);
+            --shadow-md: 0 4px 16px rgba(255, 107, 138, 0.12);
+            --shadow-lg: 0 8px 32px rgba(255, 107, 138, 0.16);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #FF6B8A 0%, #FF9FB8 50%, #FFB8C9 100%);
+            padding: 24px 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 4px 20px rgba(255, 107, 138, 0.25);
+        }
+
+        .header h1 {
+            color: white;
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 12px;
+            margin-top: 4px;
+            font-weight: 300;
+        }
+
+        /* Top Navigation */
+        .top-nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 16px;
+            background: white;
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 92px;
+            z-index: 90;
+        }
+
+        .nav-tab {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px 16px;
+            border-radius: 999px;
+            border: 1.5px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-tab:hover {
+            border-color: var(--secondary);
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 6px 18px rgba(255, 107, 138, 0.28);
+        }
+
+        /* Step Indicator */
+        .step-indicator {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 16px;
+            background: white;
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+            gap: 4px;
+        }
+
+        .step-indicator.hidden {
+            display: none;
+        }
+
+        .step-dot {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .step-dot .dot {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            background: var(--border);
+            color: var(--text-light);
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .step-dot.active .dot {
+            background: var(--primary);
+            color: white;
+            box-shadow: 0 3px 12px rgba(255, 107, 138, 0.4);
+            transform: scale(1.1);
+        }
+
+        .step-dot.completed .dot {
+            background: var(--success);
+            color: white;
+        }
+
+        .step-dot .label {
+            font-size: 11px;
+            color: var(--text-light);
+            white-space: nowrap;
+            display: none;
+        }
+
+        .step-dot.active .label {
+            color: var(--primary);
+            font-weight: 500;
+            display: block;
+        }
+
+        .step-connector {
+            width: 20px;
+            height: 2px;
+            background: var(--border);
+            flex-shrink: 0;
+        }
+
+        .step-connector.completed {
+            background: var(--success);
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 640px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+
+        /* Step Panels */
+        .step-panel {
+            display: none;
+            animation: fadeInUp 0.4s ease;
+        }
+
+        .step-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(16px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-title .material-symbols-outlined {
+            color: var(--primary);
+            font-size: 20px;
+        }
+
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-family: inherit;
+            transition: var(--transition);
+            background: var(--bg-main);
+            color: var(--text-primary);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(255, 107, 138, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: var(--text-light);
+        }
+
+        textarea.form-input {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* Tags / Chips */
+        .tag-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag-chip {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1.5px solid var(--border);
+            background: white;
+            color: var(--text-secondary);
+            user-select: none;
+        }
+
+        .tag-chip:hover {
+            border-color: var(--secondary);
+            background: var(--primary-light);
+        }
+
+        .tag-chip.selected {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+            box-shadow: 0 2px 8px rgba(255, 107, 138, 0.3);
+        }
+
+        .tag-chip.selected:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 12px 24px;
+            border-radius: var(--radius-sm);
+            font-size: 14px;
+            font-weight: 500;
+            font-family: inherit;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 107, 138, 0.35);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 107, 138, 0.45);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 1.5px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-light);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+            padding: 8px 16px;
+        }
+
+        .btn-ghost:hover {
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .btn-group .btn {
+            flex: 1;
+        }
+
+        /* Hot Search Section */
+        .hot-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1.5px solid transparent;
+            background: var(--bg-main);
+        }
+
+        .hot-item:hover {
+            background: var(--primary-light);
+            border-color: var(--secondary);
+        }
+
+        .hot-item.selected {
+            background: var(--primary-light);
+            border-color: var(--primary);
+        }
+
+        .hot-rank {
+            width: 22px;
+            height: 22px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+
+        .hot-rank.top3 {
+            background: linear-gradient(135deg, #FF6B8A, #FF9FB8);
+            color: white;
+        }
+
+        .hot-rank.normal {
+            background: var(--border);
+            color: var(--text-light);
+        }
+
+        .hot-text {
+            flex: 1;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        .hot-heat {
+            font-size: 11px;
+            color: var(--text-light);
+            background: var(--bg-main);
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        .hot-item.selected .hot-heat {
+            background: white;
+            color: var(--primary);
+        }
+
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 14px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .cat-tab {
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--bg-main);
+            color: var(--text-secondary);
+            white-space: nowrap;
+            border: 1px solid var(--border);
+        }
+
+        .cat-tab.active {
+            background: var(--primary);
+            color: white;
+            border-color: var(--primary);
+        }
+
+        /* Result Cards */
+        .note-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .note-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+        }
+
+        .note-direction {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 12px;
+            border-radius: 14px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .direction-pain {
+            background: #FFF0E5;
+            color: #E67E22;
+        }
+
+        .direction-visual {
+            background: #E8F5E9;
+            color: #388E3C;
+        }
+
+        .direction-gift {
+            background: #F3E5F5;
+            color: #7B1FA2;
+        }
+
+        .note-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+
+        .note-body {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.8;
+            margin-bottom: 14px;
+            white-space: pre-line;
+        }
+
+        .note-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 14px;
+        }
+
+        .note-tag {
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            background: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .copy-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            cursor: pointer;
+            background: var(--bg-main);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .copy-btn:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .copy-btn.copied {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        /* Cover Suggestion */
+        .cover-suggestion {
+            background: linear-gradient(135deg, #FFF5F7, #FFF0F5);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            margin-top: 12px;
+            border: 1px solid rgba(255, 159, 184, 0.22);
+        }
+
+        .cover-suggestion h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .cover-detail {
+            display: grid;
+            gap: 8px;
+        }
+
+        .cover-detail-item {
+            display: flex;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .cover-detail-item .label {
+            color: var(--text-light);
+            min-width: 72px;
+            flex-shrink: 0;
+        }
+
+        .cover-detail-item .value {
+            color: var(--text-primary);
+        }
+
+        .cover-extend {
+            margin-top: 14px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .cover-preview-card,
+        .cover-prompt-card {
+            background: rgba(255, 255, 255, 0.82);
+            border-radius: 14px;
+            border: 1px solid rgba(255, 159, 184, 0.18);
+            padding: 14px;
+            box-shadow: 0 4px 14px rgba(255, 107, 138, 0.08);
+        }
+
+        .cover-subtitle {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        .cover-image-shell {
+            position: relative;
+            overflow: hidden;
+            border-radius: 14px;
+            background: linear-gradient(135deg, #FFF3F6 0%, #FFE8F0 100%);
+            min-height: 260px;
+            border: 1px dashed rgba(255, 107, 138, 0.28);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cover-image-shell img {
+            width: 100%;
+            aspect-ratio: 3 / 4;
+            object-fit: cover;
+            display: block;
+            background: #FFF8FA;
+        }
+
+        .cover-image-status {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 20px;
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 13px;
+            background: linear-gradient(135deg, rgba(255, 248, 250, 0.95), rgba(255, 236, 242, 0.95));
+        }
+
+        .cover-image-status.hidden {
+            display: none;
+        }
+
+        .cover-image-status .spinner {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 107, 138, 0.18);
+            border-top-color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+
+        .cover-image-status.error .spinner {
+            display: none;
+        }
+
+        .cover-image-status.error {
+            color: var(--text-secondary);
+        }
+
+        .cover-image-caption {
+            margin-top: 10px;
+            font-size: 12px;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .cover-prompt-text {
+            background: #FFFDFE;
+            border: 1px solid rgba(255, 159, 184, 0.22);
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 12px;
+            color: var(--text-primary);
+            line-height: 1.8;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .cover-prompt-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .cover-prompt-tip {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Strategy Section */
+        .strategy-block {
+            background: var(--bg-main);
+            border-radius: var(--radius-sm);
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .strategy-block h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .strategy-block p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .strategy-block ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .strategy-block ul li {
+            font-size: 13px;
+            color: var(--text-secondary);
+            padding: 4px 0;
+            padding-left: 16px;
+            position: relative;
+        }
+
+        .strategy-block ul li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: var(--text-primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 24px;
+            font-size: 13px;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* Loading Spinner */
+        .loading-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            gap: 16px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--primary-light);
+            border-top: 3px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Responsive */
+        @media (min-width: 768px) {
+            .container {
+                padding: 24px;
+            }
+            .header {
+                padding: 32px 24px;
+            }
+            .header h1 {
+                font-size: 24px;
+            }
+            .step-dot .label {
+                display: block;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        /* Activity Cards */
+        .activity-card {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            border-radius: var(--radius-sm);
+            background: var(--bg-main);
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: 1.5px solid transparent;
+        }
+
+        .activity-card:hover {
+            border-color: var(--secondary);
+            background: var(--primary-light);
+        }
+
+        .activity-card.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .activity-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .activity-info {
+            flex: 1;
+        }
+
+        .activity-info .name {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .activity-info .desc {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 2px;
+        }
+
+        /* Section Divider */
+        .section-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 20px 0;
+        }
+
+        /* Empty State */
+        .empty-hint {
+            text-align: center;
+            padding: 24px;
+            color: var(--text-light);
+            font-size: 13px;
+        }
+
+        /* Price Range */
+        .price-range {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .price-range .form-input {
+            width: 100px;
+        }
+
+        .price-range .separator {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        /* Tab Switch for Results */
+        .result-tabs {
+            display: flex;
+            gap: 0;
+            background: var(--bg-main);
+            border-radius: var(--radius-sm);
+            padding: 4px;
+            margin-bottom: 16px;
+        }
+
+        .result-tab {
+            flex: 1;
+            text-align: center;
+            padding: 10px 8px;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            cursor: pointer;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .result-tab.active {
+            background: white;
+            color: var(--primary);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Floating Action */
+        .fab-bottom {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 12px 16px;
+            box-shadow: 0 -4px 16px rgba(0,0,0,0.06);
+            z-index: 99;
+            display: flex;
+            gap: 12px;
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        .fab-bottom .btn {
+            flex: 1;
+        }
+
+        /* Title Character Count */
+        .title-counter {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 8px;
+            font-weight: 500;
+        }
+
+        .title-counter.ok {
+            background: #E8F5E9;
+            color: #388E3C;
+        }
+
+        .title-counter.warn {
+            background: #FFF3E0;
+            color: #E65100;
+        }
+
+        .title-counter.over {
+            background: #FFEBEE;
+            color: #C62828;
+            animation: shake 0.4s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-3px); }
+            75% { transform: translateX(3px); }
+        }
+
+        /* Content Check Module */
+        .check-module {
+            background: white;
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .check-module-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .check-section {
+            background: var(--bg-main);
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            margin-bottom: 12px;
+        }
+
+        .check-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .check-section h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .check-section p {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .violation-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .violation-list li {
+            font-size: 13px;
+            padding: 6px 10px;
+            margin-bottom: 6px;
+            border-radius: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .violation-list li.danger {
+            background: #FFEBEE;
+            color: #C62828;
+        }
+
+        .violation-list li.warning {
+            background: #FFF8E1;
+            color: #F57F17;
+        }
+
+        .violation-list li.safe {
+            background: #E8F5E9;
+            color: #2E7D32;
+        }
+
+        .violation-word {
+            font-weight: 600;
+            padding: 1px 6px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.7);
+            white-space: nowrap;
+        }
+
+        .check-pass {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--success);
+            font-size: 13px;
+            font-weight: 500;
+            padding: 8px 12px;
+            background: #E8F5E9;
+            border-radius: 8px;
+        }
+
+        .dedup-tips {
+            background: #F3E5F5;
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 8px;
+        }
+
+        .dedup-tips p {
+            font-size: 12px;
+            color: #6A1B9A;
+            line-height: 1.8;
+        }
+
+        .dedup-tips ul {
+            list-style: none;
+            padding: 0;
+            margin-top: 6px;
+        }
+
+        .dedup-tips ul li {
+            font-size: 12px;
+            color: #6A1B9A;
+            padding: 2px 0;
+            padding-left: 14px;
+            position: relative;
+        }
+
+        .dedup-tips ul li::before {
+            content: '💡';
+            position: absolute;
+            left: 0;
+            font-size: 10px;
+        }
+
+        /* History Daily Report */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .history-item {
+            background: linear-gradient(180deg, #FFFDFE 0%, #FFF7FA 100%);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .history-item.collapsed .history-body {
+            display: none;
+        }
+
+        .history-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 16px 18px;
+            cursor: pointer;
+            background: linear-gradient(135deg, rgba(255, 107, 138, 0.08), rgba(255, 184, 201, 0.12));
+        }
+
+        .history-title-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .history-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .history-updated {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .history-toggle {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 2px 8px rgba(255, 107, 138, 0.15);
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .history-item.collapsed .history-toggle {
+            transform: rotate(-90deg);
+        }
+
+        .history-body {
+            padding: 18px;
+            display: grid;
+            gap: 16px;
+        }
+
+        .history-section {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 14px;
+        }
+
+        .history-section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .history-category-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .history-category-card {
+            background: var(--bg-main);
+            border-radius: 12px;
+            padding: 12px;
+            border: 1px solid rgba(255, 107, 138, 0.08);
+        }
+
+        .history-category-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 10px;
+        }
+
+        .history-tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .history-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            font-size: 12px;
+            border: 1px solid rgba(255, 107, 138, 0.12);
+        }
+
+        .history-tag .rank {
+            font-weight: 700;
+        }
+
+        .history-empty {
+            text-align: center;
+            padding: 36px 20px;
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        /* Password Gate */
+        body.auth-locked {
+            overflow: hidden;
+        }
+
+        .password-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+            background:
+                radial-gradient(circle at 18% 18%, rgba(255, 184, 201, 0.55), transparent 34%),
+                radial-gradient(circle at 82% 76%, rgba(255, 107, 138, 0.34), transparent 36%),
+                linear-gradient(135deg, rgba(255, 248, 250, 0.97), rgba(255, 228, 236, 0.98));
+            backdrop-filter: blur(18px);
+        }
+
+        .password-overlay.hidden {
+            display: none;
+        }
+
+        .password-card {
+            width: min(420px, 100%);
+            padding: 34px 30px 30px;
+            border-radius: 28px;
+            background: rgba(255, 255, 255, 0.86);
+            border: 1px solid rgba(255, 107, 138, 0.18);
+            box-shadow: 0 24px 70px rgba(255, 107, 138, 0.28);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            animation: authCardIn 0.48s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .password-card::before {
+            content: '';
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            top: -88px;
+            right: -70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 107, 138, 0.22), rgba(255, 184, 201, 0.16));
+        }
+
+        .password-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 24px;
+            color: white;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            box-shadow: 0 12px 28px rgba(255, 107, 138, 0.32);
+            position: relative;
+            z-index: 1;
+        }
+
+        .password-icon .material-symbols-outlined {
+            font-size: 34px;
+        }
+
+        .password-card h2 {
+            font-size: 23px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .password-card p {
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-bottom: 22px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .password-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 15px 16px;
+            border-radius: 16px;
+            border: 1.5px solid var(--border);
+            background: rgba(255, 248, 250, 0.9);
+            color: var(--text-primary);
+            font-size: 15px;
+            outline: none;
+            transition: var(--transition);
+            text-align: center;
+            letter-spacing: 1px;
+        }
+
+        .password-input:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(255, 107, 138, 0.12);
+        }
+
+        .password-submit {
+            border: none;
+            cursor: pointer;
+            padding: 14px 18px;
+            border-radius: 16px;
+            color: white;
+            font-size: 15px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            box-shadow: 0 10px 24px rgba(255, 107, 138, 0.28);
+            transition: var(--transition);
+        }
+
+        .password-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(255, 107, 138, 0.34);
+        }
+
+        .password-error {
+            min-height: 18px;
+            color: var(--primary-dark);
+            font-size: 13px;
+            font-weight: 600;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .password-error.show {
+            opacity: 1;
+        }
+
+        .password-card.shake {
+            animation: authShake 0.42s ease-in-out;
+        }
+
+        @keyframes authCardIn {
+            from { opacity: 0; transform: translateY(18px) scale(0.96); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes authShake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-10px); }
+            40% { transform: translateX(9px); }
+            60% { transform: translateX(-7px); }
+            80% { transform: translateX(5px); }
+        }
+    </style>
+</head>
+<body class="auth-locked">
+    <!-- Password Gate -->
+    <div class="password-overlay" id="passwordOverlay" role="dialog" aria-modal="true" aria-labelledby="passwordTitle">
+        <div class="password-card" id="passwordCard">
+            <div class="password-icon">
+                <span class="material-symbols-outlined">lock</span>
+            </div>
+            <h2 id="passwordTitle">访问验证</h2>
+            <p>请输入访问密码，解锁饰品博主智能运营系统</p>
+            <form class="password-form" id="passwordForm">
+                <input class="password-input" id="passwordInput" type="password" placeholder="请输入密码" autocomplete="current-password" aria-label="访问密码">
+                <button class="password-submit" type="submit">进入系统</button>
+                <div class="password-error" id="passwordError" aria-live="polite">密码错误，请重试</div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main App (hidden until password verified) -->
+    <div id="main-app" style="display:none;">
+
+    <!-- Header -->
+    <div class="header">
+        <h1>✨ 饰品博主智能运营系统</h1>
+        <p>专注选品，内容生产与流量获取交给系统</p>
+    </div>
+
+    <!-- Top Navigation -->
+    <div class="top-nav">
+        <button class="nav-tab active" data-view="main" onclick="goToMain()">
+            🏠 首页/主功能
+        </button>
+        <button class="nav-tab" data-view="history" onclick="goToHistory()">
+            📅 历史日报
+        </button>
+    </div>
+
+    <!-- Step Indicator -->
+    <div class="step-indicator">
+        <div class="step-dot active" data-step="1">
+            <div class="dot">1</div>
+            <span class="label">选品输入</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-dot" data-step="2">
+            <div class="dot">2</div>
+            <span class="label">热搜匹配</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-dot" data-step="3">
+            <div class="dot">3</div>
+            <span class="label">生成内容</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-dot" data-step="4">
+            <div class="dot">4</div>
+            <span class="label">封面建议</span>
+        </div>
+        <div class="step-connector"></div>
+        <div class="step-dot" data-step="5">
+            <div class="dot">5</div>
+            <span class="label">发布策略</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Step 1: Product Input -->
+        <div class="step-panel active" id="step1">
+            <div class="card">
+                <div class="card-title">
+                    <span class="material-symbols-outlined">diamond</span>
+                    产品信息
+                </div>
+                <div class="form-group">
+                    <label class="form-label">产品名称 *</label>
+                    <input type="text" class="form-input" id="productName" placeholder="如：花朵造型耳夹、星月珍珠耳钉">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">核心卖点（可多选或自填）</label>
+                    <div class="tag-group" id="sellingPoints">
+                        <span class="tag-chip" data-value="无耳洞可戴">无耳洞可戴</span>
+                        <span class="tag-chip" data-value="显脸小">显脸小</span>
+                        <span class="tag-chip" data-value="不夹耳">不夹耳</span>
+                        <span class="tag-chip" data-value="水晶材质">水晶材质</span>
+                        <span class="tag-chip" data-value="珍珠点缀">珍珠点缀</span>
+                        <span class="tag-chip" data-value="轻奢质感">轻奢质感</span>
+                        <span class="tag-chip" data-value="百搭日常">百搭日常</span>
+                        <span class="tag-chip" data-value="防过敏材质">防过敏材质</span>
+                        <span class="tag-chip" data-value="手工制作">手工制作</span>
+                        <span class="tag-chip" data-value="独特设计">独特设计</span>
+                    </div>
+                    <input type="text" class="form-input" id="customPoint" placeholder="自定义卖点，按回车添加" style="margin-top: 10px;">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">目标人群</label>
+                    <div class="tag-group" id="targetAudience">
+                        <span class="tag-chip" data-value="学生党">学生党</span>
+                        <span class="tag-chip" data-value="通勤女生">通勤女生</span>
+                        <span class="tag-chip" data-value="送礼场景">送礼场景</span>
+                        <span class="tag-chip" data-value="约会穿搭">约会穿搭</span>
+                        <span class="tag-chip" data-value="轻熟风">轻熟风</span>
+                        <span class="tag-chip" data-value="甜酷少女">甜酷少女</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">价格区间</label>
+                    <div class="price-range">
+                        <input type="number" class="form-input" id="priceMin" placeholder="9.9" min="0">
+                        <span class="separator">—</span>
+                        <input type="number" class="form-input" id="priceMax" placeholder="29.9" min="0">
+                        <span class="separator">元</span>
+                    </div>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-primary btn-block" onclick="goToStep(2)">
+                    下一步：匹配热搜词
+                    <span class="material-symbols-outlined" style="font-size:18px">arrow_forward</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 2: Hot Search & Activities -->
+        <div class="step-panel" id="step2">
+            <div class="card">
+                <div class="card-title">
+                    <span class="material-symbols-outlined">local_fire_department</span>
+                    饰品类热搜词 TOP10
+                </div>
+                <div class="category-tabs">
+                    <span class="cat-tab active" data-cat="earring">耳饰</span>
+                    <span class="cat-tab" data-cat="ring">戒指</span>
+                    <span class="cat-tab" data-cat="necklace">项链</span>
+                </div>
+                <div id="hotSearchList"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
+                    <span class="material-symbols-outlined">celebration</span>
+                    热门活动 & 节点
+                </div>
+                <div id="activityList"></div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="goToStep(1)">
+                    <span class="material-symbols-outlined" style="font-size:18px">arrow_back</span>
+                    上一步
+                </button>
+                <button class="btn btn-primary" onclick="generateNotes()">
+                    生成笔记内容
+                    <span class="material-symbols-outlined" style="font-size:18px">auto_awesome</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 3: Generated Notes -->
+        <div class="step-panel" id="step3">
+            <div id="loadingState" class="loading-wrapper" style="display:none;">
+                <div class="spinner"></div>
+                <div class="loading-text">正在为你生成 3 条精品笔记...</div>
+            </div>
+            <div id="notesResult"></div>
+            <div id="contentCheckResult" style="display:none;"></div>
+            <div class="btn-group" id="step3Btns" style="display:none;">
+                <button class="btn btn-secondary" onclick="goToStep(2)">
+                    <span class="material-symbols-outlined" style="font-size:18px">arrow_back</span>
+                    重新选词
+                </button>
+                <button class="btn btn-primary" onclick="goToStep(4)">
+                    查看封面建议
+                    <span class="material-symbols-outlined" style="font-size:18px">arrow_forward</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 4: Cover Suggestions -->
+        <div class="step-panel" id="step4">
+            <div id="coverResult"></div>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="goToStep(3)">
+                    <span class="material-symbols-outlined" style="font-size:18px">arrow_back</span>
+                    返回笔记
+                </button>
+                <button class="btn btn-primary" onclick="goToStep(5)">
+                    查看发布策略
+                    <span class="material-symbols-outlined" style="font-size:18px">arrow_forward</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 5: Publishing Strategy -->
+        <div class="step-panel" id="step5">
+            <div id="strategyResult"></div>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="goToStep(4)">
+                    <span class="material-symbols-outlined" style="font-size:18px">arrow_back</span>
+                    返回封面
+                </button>
+                <button class="btn btn-primary" onclick="goToHistory()">
+                    查看历史日报
+                    <span class="material-symbols-outlined" style="font-size:18px">arrow_forward</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Step 6: History Daily Reports -->
+        <div class="step-panel" id="step6">
+            <div class="card">
+                <div class="card-title">
+                    <span class="material-symbols-outlined">history</span>
+                    历史日报
+                </div>
+                <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">
+                    汇总近 90 天的热搜日报，默认展开最新一条，方便随时回看趋势变化。
+                </p>
+                <div id="historyDailyList" class="history-list">
+                    <div class="history-empty">历史日报加载中...</div>
+                </div>
+            </div>
+            <div class="btn-group">
+                <button class="btn btn-secondary" onclick="goToMain()">
+                    <span class="material-symbols-outlined" style="font-size:18px">arrow_back</span>
+                    返回主功能
+                </button>
+                <button class="btn btn-primary" onclick="resetAll()">
+                    <span class="material-symbols-outlined" style="font-size:18px">refresh</span>
+                    开始新一轮选品
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+    <!-- Data Update Indicator -->
+    <div id="dataStatus" style="display:none;position:fixed;top:12px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,0.95);padding:6px 14px;border-radius:20px;font-size:11px;color:var(--text-secondary);box-shadow:0 2px 12px rgba(0,0,0,0.1);z-index:200;border:1px solid var(--border);backdrop-filter:blur(8px);">
+        <span class="material-symbols-outlined" style="font-size:14px;vertical-align:middle;color:var(--success)">cloud_done</span>
+        <span id="dataUpdateTime">数据加载中...</span>
+    </div>
+    </div><!-- /main-app -->
+    <script>
+    // ============ PASSWORD GATE ============
+    (function initPasswordGate() {
+        const PASSWORD = 'xhs2026';
+        const SESSION_KEY = 'xhs_system_authenticated';
+        const overlay = document.getElementById('passwordOverlay');
+        const card = document.getElementById('passwordCard');
+        const form = document.getElementById('passwordForm');
+        const input = document.getElementById('passwordInput');
+        const error = document.getElementById('passwordError');
+        const mainContainer = document.getElementById('main-app');
+
+        function unlock() {
+            sessionStorage.setItem(SESSION_KEY, 'true');
+            overlay.classList.add('hidden');
+            document.body.classList.remove('auth-locked');
+            if (mainContainer) {
+                mainContainer.style.display = '';
+            }
+        }
+
+        function showError() {
+            error.classList.add('show');
+            card.classList.remove('shake');
+            void card.offsetWidth;
+            card.classList.add('shake');
+            input.select();
+            input.focus();
+        }
+
+        if (sessionStorage.getItem(SESSION_KEY) === 'true') {
+            unlock();
+            return;
+        }
+
+        input.focus();
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            if (input.value === PASSWORD) {
+                unlock();
+            } else {
+                showError();
+            }
+        });
+    })();
+
+    // ============ DATA (loaded from external files) ============
+    let hotSearchData = {};
+    let activities = [];
+    let templates = null;
+    let historyReports = [];
+
+    // ============ STATE ============
+    let currentStep = 1;
+    let currentView = 'main';
+    let selectedHotWords = [];
+    let selectedActivities = [];
+    let currentCategory = 'earring';
+    let generatedNotes = [];
+
+    // ============ INIT: Load external data ============
+    document.addEventListener('DOMContentLoaded', async () => {
+        await loadExternalData();
+        renderHotSearch('earring');
+        renderActivities();
+        initTagChips();
+        initCategoryTabs();
+        initCustomPointInput();
+        updateTopNav();
+        updateStepIndicator();
+    });
+
+    async function loadExternalData() {
+        const ts = Date.now();
+        await Promise.all([
+            loadKeywordsData(ts),
+            loadTemplatesData(ts),
+            loadHistoryData(ts)
+        ]);
+    }
+
+    async function loadKeywordsData(ts) {
+        try {
+            const kwRes = await fetch('./keywords.json?t=' + ts);
+            if (kwRes.ok) {
+                const kwData = await kwRes.json();
+                hotSearchData = kwData.hot_search || {};
+                activities = kwData.activities || [];
+                const statusEl = document.getElementById('dataStatus');
+                const timeEl = document.getElementById('dataUpdateTime');
+                statusEl.style.display = 'block';
+                timeEl.textContent = '数据已同步：' + (kwData.updated_at || '未知');
+                setTimeout(() => { statusEl.style.opacity = '0'; statusEl.style.transition = 'opacity 0.5s'; }, 4000);
+                setTimeout(() => { statusEl.style.display = 'none'; }, 4500);
+                return;
+            }
+            throw new Error('keywords.json http ' + kwRes.status);
+        } catch (e) {
+            console.warn('keywords.json 加载失败，使用默认数据', e);
+            loadFallbackKeywords();
+        }
+    }
+
+    async function loadTemplatesData(ts) {
+        try {
+            const tplRes = await fetch('./templates.json?t=' + ts);
+            if (tplRes.ok) {
+                templates = await tplRes.json();
+                return;
+            }
+            throw new Error('templates.json http ' + tplRes.status);
+        } catch (e) {
+            console.warn('templates.json 加载失败，使用默认模板', e);
+            templates = null;
+        }
+    }
+
+    async function loadHistoryData(ts) {
+        const container = document.getElementById('historyDailyList');
+        try {
+            const historyRes = await fetch('./history.json?t=' + ts);
+            if (historyRes.status === 404) {
+                historyReports = [];
+                container.innerHTML = '<div class="history-empty">暂无历史记录</div>';
+                return;
+            }
+            if (!historyRes.ok) {
+                throw new Error('history.json http ' + historyRes.status);
+            }
+            const data = await historyRes.json();
+            historyReports = Array.isArray(data) ? data : [];
+            renderHistoryReports();
+        } catch (e) {
+            console.warn('history.json 加载失败', e);
+            historyReports = [];
+            container.innerHTML = '<div class="history-empty">暂无历史记录</div>';
+        }
+    }
+
+    function loadFallbackKeywords() {
+        // Fallback data if fetch fails
+        hotSearchData = {
+            earring: [
+                { text: '耳夹合集 无耳洞女生必入', heat: '12.8w' },
+                { text: '显脸小耳饰推荐', heat: '9.6w' },
+                { text: '夏天戴什么耳环好看', heat: '8.3w' },
+                { text: '平价耳钉合集 学生党', heat: '7.5w' },
+                { text: '珍珠耳环 温柔气质', heat: '6.9w' }
+            ],
+            ring: [
+                { text: '叠戴戒指搭配教程', heat: '8.2w' },
+                { text: '平价开口戒推荐', heat: '7.1w' },
+                { text: '显手白戒指合集', heat: '6.5w' }
+            ],
+            necklace: [
+                { text: '锁骨链推荐 显瘦', heat: '10.1w' },
+                { text: '叠戴项链 时髦穿搭', heat: '8.7w' },
+                { text: '珍珠项链 温柔气质', heat: '7.3w' }
+            ]
+        };
+        activities = [
+            { icon: '🎋', name: '七夕情人节', desc: '浪漫饰品送礼季', color: '#FFE4EC' },
+            { icon: '🎓', name: '开学季', desc: '学生党平价饰品', color: '#E8F5E9' },
+            { icon: '☀️', name: '夏日清凉感', desc: '清透材质饰品', color: '#E0F7FA' }
+        ];
+    }
+
+    // ============ TAG CHIPS ============
+    function initTagChips() {
+        document.querySelectorAll('.tag-group .tag-chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                chip.classList.toggle('selected');
+            });
+        });
+    }
+
+    function initCustomPointInput() {
+        const input = document.getElementById('customPoint');
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && input.value.trim()) {
+                const container = document.getElementById('sellingPoints');
+                const newChip = document.createElement('span');
+                newChip.className = 'tag-chip selected';
+                newChip.dataset.value = input.value.trim();
+                newChip.textContent = input.value.trim();
+                newChip.addEventListener('click', () => newChip.classList.toggle('selected'));
+                container.appendChild(newChip);
+                input.value = '';
+            }
+        });
+    }
+
+    // ============ CATEGORY TABS ============
+    function initCategoryTabs() {
+        document.querySelectorAll('.cat-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentCategory = tab.dataset.cat;
+                renderHotSearch(currentCategory);
+            });
+        });
+    }
+
+    // ============ HOT SEARCH ============
+    function renderHotSearch(category) {
+        const container = document.getElementById('hotSearchList');
+        const data = hotSearchData[category];
+        container.innerHTML = data.map((item, i) => `
+            <div class="hot-item ${selectedHotWords.includes(item.text) ? 'selected' : ''}" 
+                 onclick="toggleHotWord(this, '${item.text}')">
+                <div class="hot-rank ${i < 3 ? 'top3' : 'normal'}">${i + 1}</div>
+                <div class="hot-text">${item.text}</div>
+                <div class="hot-heat">${item.heat}</div>
+            </div>
+        `).join('');
+    }
+
+    function toggleHotWord(el, word) {
+        el.classList.toggle('selected');
+        const idx = selectedHotWords.indexOf(word);
+        if (idx > -1) {
+            selectedHotWords.splice(idx, 1);
+        } else {
+            selectedHotWords.push(word);
+        }
+    }
+
+    // ============ ACTIVITIES ============
+    function renderActivities() {
+        const container = document.getElementById('activityList');
+        container.innerHTML = activities.map(act => `
+            <div class="activity-card ${selectedActivities.includes(act.name) ? 'selected' : ''}" 
+                 onclick="toggleActivity(this, '${act.name}')">
+                <div class="activity-icon" style="background:${act.color}">${act.icon}</div>
+                <div class="activity-info">
+                    <div class="name">${act.name}</div>
+                    <div class="desc">${act.desc}</div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function toggleActivity(el, name) {
+        el.classList.toggle('selected');
+        const idx = selectedActivities.indexOf(name);
+        if (idx > -1) {
+            selectedActivities.splice(idx, 1);
+        } else {
+            selectedActivities.push(name);
+        }
+    }
+
+    // ============ HISTORY DAILY REPORTS ============
+    function renderHistoryReports() {
+        const container = document.getElementById('historyDailyList');
+        if (!historyReports.length) {
+            container.innerHTML = '<div class="history-empty">暂无历史记录</div>';
+            return;
+        }
+
+        const categoryLabels = {
+            earring: '耳饰',
+            ring: '戒指',
+            necklace: '项链'
+        };
+        const categoryOrder = ['earring', 'ring', 'necklace'];
+
+        container.innerHTML = historyReports.map((report, index) => {
+            const hotSearch = report.hot_search || {};
+            const activitiesHtml = (report.activities || []).map(act => `
+                <div class="activity-card" style="cursor:default;">
+                    <div class="activity-icon" style="background:${act.color || '#FFE4EC'}">${act.icon || '✨'}</div>
+                    <div class="activity-info">
+                        <div class="name">${act.name || '活动待补充'}</div>
+                        <div class="desc">${act.desc || ''}</div>
+                    </div>
+                </div>
+            `).join('') || '<div class="empty-hint">暂无热门活动</div>';
+
+            const categoryHtml = categoryOrder.map(category => {
+                const words = Array.isArray(hotSearch[category]) ? hotSearch[category].slice(0, 10) : [];
+                const tagsHtml = words.map((item, wordIndex) => `
+                    <span class="history-tag">
+                        <span class="rank">TOP${wordIndex + 1}</span>
+                        <span>${item.text || ''}</span>
+                    </span>
+                `).join('') || '<div class="empty-hint">暂无热搜词</div>';
+
+                return `
+                    <div class="history-category-card">
+                        <div class="history-category-name">${categoryLabels[category]}</div>
+                        <div class="history-tag-list">${tagsHtml}</div>
+                    </div>
+                `;
+            }).join('');
+
+            return `
+                <div class="history-item ${index === 0 ? '' : 'collapsed'}" data-history-index="${index}">
+                    <div class="history-header" onclick="toggleHistoryItem(${index})">
+                        <div class="history-title-wrap">
+                            <div class="history-title">${report.date || '未知日期'} 日报</div>
+                            <div class="history-updated">更新时间：${report.updated_at || '未知'}</div>
+                        </div>
+                        <div class="history-toggle">
+                            <span class="material-symbols-outlined">expand_more</span>
+                        </div>
+                    </div>
+                    <div class="history-body">
+                        <div class="history-section">
+                            <div class="history-section-title">
+                                <span class="material-symbols-outlined" style="font-size:18px;color:var(--primary)">local_fire_department</span>
+                                三大品类 Top10 热搜词
+                            </div>
+                            <div class="history-category-grid">${categoryHtml}</div>
+                        </div>
+                        <div class="history-section">
+                            <div class="history-section-title">
+                                <span class="material-symbols-outlined" style="font-size:18px;color:var(--warning)">celebration</span>
+                                热门活动列表
+                            </div>
+                            <div>${activitiesHtml}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function toggleHistoryItem(index) {
+        const item = document.querySelector(`[data-history-index="${index}"]`);
+        if (!item) return;
+        item.classList.toggle('collapsed');
+    }
+
+    // ============ STEP NAVIGATION ============
+    function activatePanel(panelId) {
+        document.querySelectorAll('.step-panel').forEach(panel => panel.classList.remove('active'));
+        const targetPanel = document.getElementById(panelId);
+        if (targetPanel) {
+            targetPanel.classList.add('active');
+        }
+    }
+
+    function updateTopNav() {
+        document.querySelectorAll('.nav-tab').forEach(tab => {
+            tab.classList.toggle('active', tab.dataset.view === currentView);
+        });
+    }
+
+    function updateStepIndicator() {
+        const indicator = document.querySelector('.step-indicator');
+        indicator.classList.toggle('hidden', currentView !== 'main');
+
+        document.querySelectorAll('.step-dot').forEach((dot, i) => {
+            dot.classList.remove('active', 'completed');
+            if (i + 1 === currentStep) dot.classList.add('active');
+            else if (i + 1 < currentStep) dot.classList.add('completed');
+        });
+
+        document.querySelectorAll('.step-connector').forEach((conn, i) => {
+            conn.classList.toggle('completed', i + 1 < currentStep);
+        });
+    }
+
+    function setTopView(view, targetStep = currentStep) {
+        currentView = view;
+        if (view === 'history') {
+            activatePanel('step6');
+        } else {
+            currentStep = targetStep;
+            activatePanel('step' + currentStep);
+        }
+        updateTopNav();
+        updateStepIndicator();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function goToMain(step = currentStep) {
+        setTopView('main', step);
+    }
+
+    function goToHistory() {
+        setTopView('history');
+    }
+
+    function goToStep(step) {
+        if (step === 2 && !validateStep1()) return;
+
+        currentStep = step;
+        currentView = 'main';
+        activatePanel('step' + step);
+        updateTopNav();
+        updateStepIndicator();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function validateStep1() {
+        const name = document.getElementById('productName').value.trim();
+        if (!name) {
+            showToast('请输入产品名称 ✍️');
+            return false;
+        }
+        return true;
+    }
+
+    // ============ GENERATE NOTES ============
+    function generateNotes() {
+        goToStep(3);
+        const loading = document.getElementById('loadingState');
+        const result = document.getElementById('notesResult');
+        const btns = document.getElementById('step3Btns');
+        
+        loading.style.display = 'flex';
+        result.innerHTML = '';
+        btns.style.display = 'none';
+
+        setTimeout(() => {
+            loading.style.display = 'none';
+            generatedNotes = buildNotes();
+            renderNotes();
+            btns.style.display = 'flex';
+        }, 1800);
+    }
+
+    function getFormData() {
+        const name = document.getElementById('productName').value.trim();
+        const points = [...document.querySelectorAll('#sellingPoints .tag-chip.selected')].map(c => c.dataset.value);
+        const audience = [...document.querySelectorAll('#targetAudience .tag-chip.selected')].map(c => c.dataset.value);
+        const priceMin = document.getElementById('priceMin').value || '9.9';
+        const priceMax = document.getElementById('priceMax').value || '29.9';
+        return { name, points, audience, priceMin, priceMax };
+    }
+
+    function buildNotes() {
+        const form = getFormData();
+        const hotWords = selectedHotWords.length > 0 ? selectedHotWords : ['饰品推荐'];
+        const acts = selectedActivities.length > 0 ? selectedActivities : ['日常穿搭'];
+        
+        const priceTag = `${form.priceMin}-${form.priceMax}元`;
+        const pointsStr = form.points.join('、') || '精致好看';
+        const audienceStr = form.audience.join('/') || '爱美女生';
+        const mainHot = hotWords[0] || '耳饰推荐';
+        const mainAct = acts[0] || '日常';
+
+        // Helper: truncate title to 20 chars
+        function trimTitle(title) {
+            const chars = [...title];
+            if (chars.length <= 20) return title;
+            return chars.slice(0, 19).join('') + '…';
+        }
+
+        // Short product name for titles
+        const shortName = form.name.length > 6 ? form.name.slice(0, 5) : form.name;
+
+        // Template variable replacer
+        function fillTemplate(tpl) {
+            return tpl
+                .replace(/\{productName\}/g, form.name)
+                .replace(/\{shortName\}/g, shortName)
+                .replace(/\{sellingPoints\}/g, pointsStr)
+                .replace(/\{priceRange\}/g, priceTag)
+                .replace(/\{audience\}/g, audienceStr)
+                .replace(/\{activity\}/g, mainAct)
+                .replace(/\{hook\}/g, '') // hook is replaced separately
+                .replace(/\{hotword1\}/g, hotWords[0] || '饰品推荐')
+                .replace(/\{hotword2\}/g, hotWords[1] || '耳饰合集')
+                .replace(/\{hotword3\}/g, hotWords[2] || '平价好物')
+                .replace(/\{point1\}/g, form.points[0] || '精致好看')
+                .replace(/\{audience1\}/g, form.audience[0] || '爱美女生');
+        }
+
+        // Pick random item from array
+        function pick(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        const directions = ['pain', 'visual', 'gift'];
+        const dirLabels = { pain: '痛点场景', visual: '穿搭种草', gift: '送礼/情感' };
+        const notes = [];
+
+        for (const dir of directions) {
+            let title, body, tags;
+
+            if (templates && templates.title_formulas && templates.body_templates) {
+                // Use external templates
+                const titleFormula = pick(templates.title_formulas[dir] || []);
+                title = trimTitle(fillTemplate(titleFormula || ''));
+
+                const hookSentence = pick(templates.hook_sentences?.[dir] || ['']);
+                const filledHook = fillTemplate(hookSentence);
+
+                const bodyTpl = pick(templates.body_templates[dir] || []);
+                body = fillTemplate((bodyTpl?.structure || '').replace(/\{hook\}/g, filledHook));
+
+                const tagTpl = templates.tag_templates?.[dir] || [];
+                tags = tagTpl.map(t => fillTemplate(t)).slice(0, 10);
+            } else {
+                // Fallback hardcoded templates
+                title = trimTitle(buildFallbackTitle(dir, shortName, mainAct));
+                body = buildFallbackBody(dir, form.name, pointsStr, priceTag, audienceStr, mainAct);
+                tags = buildFallbackTags(dir, hotWords, form.name, pointsStr, audienceStr, mainAct, priceTag);
+            }
+
+            notes.push({
+                direction: dir,
+                dirLabel: dirLabels[dir],
+                title,
+                body,
+                tags
+            });
+        }
+
+        return notes;
+    }
+
+    // Fallback functions when templates.json is not available
+    function buildFallbackTitle(dir, shortName, mainAct) {
+        const titles = {
+            pain: `没耳洞也能美！这款${shortName}绝了😭`,
+            visual: `戴上脸小一圈❗${shortName}太绝了`,
+            gift: `${mainAct}送这个！收到直接尖叫🎁`
+        };
+        return titles[dir];
+    }
+
+    function buildFallbackBody(dir, name, points, price, audience, act) {
+        const bodies = {
+            pain: `姐妹们！谁懂啊！！！\n没有耳洞但又超想戴好看的耳饰！\n\n之前买过很多耳夹，要么夹得耳朵疼💀\n要么戴一会就掉了...\n\n直到我发现了这款【${name}】！\n✅ ${points}\n✅ 戴一整天都不会疼\n✅ 价格才${price}，真的太香了\n\n${audience}冲它就对了！\n评论区告诉我你们想看什么款式？`,
+            visual: `最近发现一个穿搭小心机💡\n选对耳饰真的可以修饰脸型！！\n\n这款【${name}】我必须安利给所有人！\n\n🌟 上脸效果：\n${points}，质感满满\n\n🌟 搭配建议：\n· 白T + 牛仔裤 → 日常减龄\n· 衬衫 + 西裤 → 通勤精致\n\n价格${price}，性价比超高！\n${audience}闭眼入就对了～`,
+            gift: `${act}快到了！还在纠结送什么礼物？\n\n这款【${name}】绝对是送礼天花板🎀\n\n💝 为什么推荐：\n· ${points}，送谁都不会出错\n· 包装精致，超有仪式感\n· ${price}的价格，看起来不止这个价！\n\n${audience}收到都会开心😍\n评论区一起讨论～`
+        };
+        return bodies[dir];
+    }
+
+    function buildFallbackTags(dir, hotWords, name, points, audience, act, price) {
+        const tagSets = {
+            pain: [...hotWords.slice(0, 3), name, '耳夹推荐', '无耳洞', points.split('、')[0], audience.split('/')[0], '平价饰品', price + '好物'],
+            visual: [...hotWords.slice(0, 3), name, '显脸小', '穿搭搭配', '气质耳饰', audience.split('/')[0], act, '每日穿搭'],
+            gift: [...hotWords.slice(0, 2), name, act + '礼物', '送礼推荐', '女生礼物', '闺蜜礼物', '仪式感', audience.split('/')[0], '精致生活']
+        };
+        return tagSets[dir].slice(0, 10);
+    }
+
+    function renderNotes() {
+        const container = document.getElementById('notesResult');
+        const directionColors = {
+            pain: 'direction-pain',
+            visual: 'direction-visual',
+            gift: 'direction-gift'
+        };
+        const directionIcons = {
+            pain: '💡',
+            visual: '👗',
+            gift: '🎁'
+        };
+
+        container.innerHTML = generatedNotes.map((note, idx) => {
+            const titleLen = [...note.title].length;
+            let counterClass = 'ok';
+            if (titleLen > 20) counterClass = 'over';
+            else if (titleLen >= 18) counterClass = 'warn';
+            
+            return `
+            <div class="note-card">
+                <div class="note-direction ${directionColors[note.direction]}">
+                    ${directionIcons[note.direction]} 方向${idx + 1}：${note.dirLabel}
+                </div>
+                <div class="note-title">
+                    ${note.title}
+                    <span class="title-counter ${counterClass}">${titleLen}/20字</span>
+                </div>
+                <div class="note-body">${note.body}</div>
+                <div class="note-tags">
+                    ${note.tags.map(t => `<span class="note-tag">#${t}</span>`).join('')}
+                </div>
+                <button class="copy-btn" onclick="copyNote(${idx}, this)">
+                    <span class="material-symbols-outlined" style="font-size:16px">content_copy</span>
+                    一键复制全文
+                </button>
+            </div>
+        `}).join('');
+
+        // Run content check after rendering notes
+        runContentCheck();
+    }
+
+    function copyNote(idx, btn) {
+        const note = generatedNotes[idx];
+        const text = `${note.title}\n\n${note.body}\n\n${note.tags.map(t => '#' + t).join(' ')}`;
+        navigator.clipboard.writeText(text).then(() => {
+            btn.classList.add('copied');
+            btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px">check</span> 已复制';
+            showToast('笔记内容已复制到剪贴板 ✅');
+            setTimeout(() => {
+                btn.classList.remove('copied');
+                btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px">content_copy</span> 一键复制全文';
+            }, 2000);
+        }).catch(() => {
+            // Fallback
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            btn.classList.add('copied');
+            btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px">check</span> 已复制';
+            showToast('笔记内容已复制到剪贴板 ✅');
+            setTimeout(() => {
+                btn.classList.remove('copied');
+                btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px">content_copy</span> 一键复制全文';
+            }, 2000);
+        });
+    }
+    // ============ COVER SUGGESTIONS (Step 4) ============
+    function escapeHtml(str = '') {
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
+
+    function buildCoverImagePrompt(cover, form) {
+        const productName = form.name || 'fashion jewelry';
+        return [
+            'Xiaohongshu style jewelry cover photo',
+            productName,
+            'pink and cream background',
+            'flat lay or hanging composition',
+            'product-focused',
+            'soft natural light',
+            'clean feminine styling',
+            'premium accessory photography',
+            'editorial still life',
+            cover.layout,
+            cover.style,
+            cover.tip,
+            `headline feeling: ${cover.mainText}`,
+            'high detail, high quality, no watermark, no text overlay'
+        ].join(', ');
+    }
+
+    function buildBilingualCoverPrompt(cover, form) {
+        const productName = form.name || '饰品';
+        const englishPrompt = [
+            'Xiaohongshu style jewelry cover',
+            `highlight the product ${productName}`,
+            'pink / cream background',
+            'soft natural light',
+            'flat lay or hanging composition',
+            'clean premium styling',
+            'feminine mood',
+            'close-up accessory photography',
+            'high quality, detailed texture, no watermark, no text overlay',
+            `headline mood: ${cover.mainText}`,
+            `supporting caption mood: ${cover.subText}`
+        ].join(', ');
+
+        const chinesePrompt = [
+            '小红书风格饰品封面',
+            `突出产品主体：${productName}`,
+            '粉色 / 奶油色背景',
+            '自然柔光',
+            '平铺或悬挂构图',
+            '画面干净高级',
+            '少女感与精致感并存',
+            '饰品近景特写',
+            '高质量、质感清晰、无水印、无额外文字',
+            `封面情绪参考：${cover.mainText}`,
+            `副标题氛围参考：${cover.subText}`
+        ].join('，');
+
+        return `中文 Prompt：${chinesePrompt}\n\nEnglish Prompt: ${englishPrompt}`;
+    }
+
+    function setCoverImageState(imgId, statusId, type, message) {
+        const img = document.getElementById(imgId);
+        const status = document.getElementById(statusId);
+        if (!img || !status) return;
+
+        if (type === 'loading') {
+            img.style.display = 'none';
+            status.className = 'cover-image-status';
+            status.innerHTML = `
+                <div class="spinner"></div>
+                <div>${message || 'AI 正在生成参考图，请稍候...'}</div>
+            `;
+            return;
+        }
+
+        if (type === 'error') {
+            img.style.display = 'none';
+            status.className = 'cover-image-status error';
+            status.innerHTML = `
+                <span class="material-symbols-outlined" style="font-size:28px;color:var(--primary);">broken_image</span>
+                <div>${message || '参考图加载失败了，稍后再试试或直接复制 Prompt 去生成。'}</div>
+            `;
+            return;
+        }
+
+        img.style.display = 'block';
+        status.className = 'cover-image-status hidden';
+        status.innerHTML = '';
+    }
+
+    function loadCoverReferenceImage(index, prompt) {
+        const imgId = `coverImage${index}`;
+        const statusId = `coverImageStatus${index}`;
+        const img = document.getElementById(imgId);
+        if (!img) return;
+
+        setCoverImageState(imgId, statusId, 'loading', 'AI 正在生成参考图，请稍候...');
+        img.onload = () => setCoverImageState(imgId, statusId, 'success');
+        img.onerror = () => setCoverImageState(imgId, statusId, 'error');
+        img.src = `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=768&height=1024&seed=${index + 11}&model=flux&nologo=true`;
+    }
+
+    function copyPrompt(text, btn) {
+        const resetBtn = () => {
+            setTimeout(() => {
+                btn.classList.remove('copied');
+                btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px">content_copy</span> 一键复制 Prompt';
+            }, 2000);
+        };
+
+        const onSuccess = () => {
+            btn.classList.add('copied');
+            btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px">check</span> 已复制！';
+            showToast('Prompt 已复制！');
+            resetBtn();
+        };
+
+        navigator.clipboard.writeText(text).then(onSuccess).catch(() => {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            onSuccess();
+        });
+    }
+
+    function renderCoverSuggestions() {
+        const form = getFormData();
+        const container = document.getElementById('coverResult');
+        
+        const covers = [
+            {
+                noteIdx: 0,
+                dirLabel: '痛点场景',
+                layout: '文字海报 / 对比图',
+                mainText: `没耳洞也能戴！`,
+                subText: `${form.name} | 戴一天不疼`,
+                style: '柔和粉白色调，干净背景突出文字，加入前后对比效果',
+                tip: '左右对比（无饰品 vs 戴上效果），或白底大字突出痛点'
+            },
+            {
+                noteIdx: 1,
+                dirLabel: '穿搭种草',
+                layout: '上身效果图 / 穿搭拼图',
+                mainText: `戴上脸小一圈`,
+                subText: `${form.name} | 日常通勤百搭`,
+                style: '自然光线，温暖色调，侧脸/45度角展示耳饰上脸效果',
+                tip: '3-4宫格展示不同搭配风格，或单图侧脸特写'
+            },
+            {
+                noteIdx: 2,
+                dirLabel: '送礼/情感',
+                layout: '礼盒氛围图 / 产品特写',
+                mainText: `送她这个准没错`,
+                subText: `${form.name} | 仪式感满满`,
+                style: '暖调柔光，花瓣/丝带等氛围道具，突出精致包装和质感',
+                tip: '产品放在礼盒/鲜花旁，营造节日仪式感氛围'
+            }
+        ].map(cover => ({
+            ...cover,
+            imagePrompt: buildCoverImagePrompt(cover, form),
+            bilingualPrompt: buildBilingualCoverPrompt(cover, form)
+        }));
+
+        container.innerHTML = `
+            <div class="card">
+                <div class="card-title">
+                    <span class="material-symbols-outlined">image</span>
+                    封面设计建议
+                </div>
+                <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">
+                    针对 3 条笔记方向，分别给出最佳封面方案，并附上 AI 参考图与可直接复制的双语 Prompt 👇
+                </p>
+                ${covers.map((c, i) => `
+                    <div class="cover-suggestion" style="margin-bottom:12px;">
+                        <h4>
+                            <span class="material-symbols-outlined" style="font-size:16px">palette</span>
+                            笔记${i + 1}：${c.dirLabel}
+                        </h4>
+                        <div class="cover-detail">
+                            <div class="cover-detail-item">
+                                <span class="label">构图方式</span>
+                                <span class="value">${escapeHtml(c.layout)}</span>
+                            </div>
+                            <div class="cover-detail-item">
+                                <span class="label">封面大字</span>
+                                <span class="value" style="font-weight:600;color:var(--primary)">${escapeHtml(c.mainText)}</span>
+                            </div>
+                            <div class="cover-detail-item">
+                                <span class="label">封面小字</span>
+                                <span class="value">${escapeHtml(c.subText)}</span>
+                            </div>
+                            <div class="cover-detail-item">
+                                <span class="label">视觉风格</span>
+                                <span class="value">${escapeHtml(c.style)}</span>
+                            </div>
+                            <div class="cover-detail-item">
+                                <span class="label">拍摄建议</span>
+                                <span class="value">${escapeHtml(c.tip)}</span>
+                            </div>
+                        </div>
+                        <div class="cover-extend">
+                            <div class="cover-preview-card">
+                                <div class="cover-subtitle">
+                                    <span class="material-symbols-outlined" style="font-size:16px">auto_awesome</span>
+                                    AI 生成参考图
+                                </div>
+                                <div class="cover-image-shell">
+                                    <img id="coverImage${i}" alt="笔记${i + 1} 封面参考图" style="display:none;">
+                                    <div id="coverImageStatus${i}" class="cover-image-status">
+                                        <div class="spinner"></div>
+                                        <div>AI 正在生成参考图，请稍候...</div>
+                                    </div>
+                                </div>
+                                <div class="cover-image-caption">参考图由 Pollinations.ai 生成，用于帮助你快速确认画面方向。</div>
+                            </div>
+                            <div class="cover-prompt-card">
+                                <div class="cover-subtitle">
+                                    <span class="material-symbols-outlined" style="font-size:16px">content_copy</span>
+                                    Midjourney / 即梦 AI 双语 Prompt
+                                </div>
+                                <div class="cover-prompt-text">${escapeHtml(c.bilingualPrompt)}</div>
+                                <div class="cover-prompt-actions">
+                                    <span class="cover-prompt-tip">适合继续拿去做二次精修或换模型生成。</span>
+                                    <button class="copy-btn" onclick="copyPrompt(${JSON.stringify(c.bilingualPrompt).replace(/"/g, '&quot;')}, this)">
+                                        <span class="material-symbols-outlined" style="font-size:16px">content_copy</span>
+                                        一键复制 Prompt
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+
+        covers.forEach((cover, index) => loadCoverReferenceImage(index, cover.imagePrompt));
+    }
+
+    // ============ PUBLISHING STRATEGY (Step 5) ============
+    function renderStrategy() {
+        const form = getFormData();
+        const container = document.getElementById('strategyResult');
+        
+        const strategies = [
+            {
+                noteIdx: 0,
+                dirLabel: '痛点场景',
+                bestTime: '周二/周四 12:00-13:00 或 21:00-22:00',
+                trafficType: '搜索流量为主',
+                trafficReason: '痛点型内容容易命中精准搜索词（如"耳夹不疼""无耳洞耳饰"），长尾搜索流量持续',
+                comments: [
+                    '姐妹们还想看什么类型的耳夹推荐？评论区告诉我！',
+                    '我是真的戴了一整天都没感觉！有同款的举个手🙋',
+                    '回复「链接」我私信你们购买方式哦～',
+                    '你们平时都在哪里买耳饰呀？一起交流～'
+                ]
+            },
+            {
+                noteIdx: 1,
+                dirLabel: '穿搭种草',
+                bestTime: '周一/周三/周五 18:00-19:30 或 20:30-22:00',
+                trafficType: '推荐流量为主',
+                trafficReason: '视觉种草类内容图片吸引力强，容易获得系统推荐分发，首图点击率是关键',
+                comments: [
+                    '你们最喜欢哪套搭配？1/2/3 选一个！',
+                    '这个颜色真的太显白了！实物比图片还好看✨',
+                    '身高158 也很显比例！姐妹们放心冲',
+                    '想看更多搭配的宝子记得收藏这篇💕'
+                ]
+            },
+            {
+                noteIdx: 2,
+                dirLabel: '送礼/情感',
+                bestTime: '节日前3-5天 或 周五/周六 20:00-22:00',
+                trafficType: '搜索+推荐双重流量',
+                trafficReason: '节日送礼类内容在活动期间搜索量激增，同时情感共鸣带来推荐流量加成',
+                comments: [
+                    '你们觉得送闺蜜还是送自己？哈哈我全都要🥰',
+                    '包装真的好精致！拆开那一刻太有仪式感了',
+                    '评论区说出你最想收到饰品的场景，翻牌送福利🎁',
+                    '情人节/生日/纪念日 都适合！先收藏不迷路～'
+                ]
+            }
+        ];
+
+        container.innerHTML = strategies.map((s, i) => `
+            <div class="card">
+                <div class="card-title">
+                    <span class="material-symbols-outlined">schedule</span>
+                    笔记${i + 1}：${s.dirLabel} · 发布策略
+                </div>
+                
+                <div class="strategy-block">
+                    <h4>
+                        <span class="material-symbols-outlined" style="font-size:18px;color:var(--primary)">access_time</span>
+                        最佳发布时间
+                    </h4>
+                    <p>${s.bestTime}</p>
+                </div>
+
+                <div class="strategy-block">
+                    <h4>
+                        <span class="material-symbols-outlined" style="font-size:18px;color:var(--warning)">trending_up</span>
+                        流量预判：${s.trafficType}
+                    </h4>
+                    <p>${s.trafficReason}</p>
+                </div>
+
+                <div class="strategy-block">
+                    <h4>
+                        <span class="material-symbols-outlined" style="font-size:18px;color:var(--success)">chat_bubble</span>
+                        评论区互动话术
+                    </h4>
+                    <ul>
+                        ${s.comments.map(c => `<li>${c}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <button class="copy-btn" onclick="copyStrategy(${i}, this)" style="margin-top:8px;">
+                    <span class="material-symbols-outlined" style="font-size:16px">content_copy</span>
+                    复制互动话术
+                </button>
+            </div>
+        `).join('');
+    }
+
+    function copyStrategy(idx, btn) {
+        const strategies = [
+            ['姐妹们还想看什么类型的耳夹推荐？评论区告诉我！', '我是真的戴了一整天都没感觉！有同款的举个手🙋', '回复「链接」我私信你们购买方式哦～', '你们平时都在哪里买耳饰呀？一起交流～'],
+            ['你们最喜欢哪套搭配？1/2/3 选一个！', '这个颜色真的太显白了！实物比图片还好看✨', '身高158 也很显比例！姐妹们放心冲', '想看更多搭配的宝子记得收藏这篇💕'],
+            ['你们觉得送闺蜜还是送自己？哈哈我全都要🥰', '包装真的好精致！拆开那一刻太有仪式感了', '评论区说出你最想收到饰品的场景，翻牌送福利🎁', '情人节/生日/纪念日 都适合！先收藏不迷路～']
+        ];
+        const text = strategies[idx].join('\n');
+        navigator.clipboard.writeText(text).then(() => {
+            btn.classList.add('copied');
+            btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px">check</span> 已复制';
+            showToast('互动话术已复制 ✅');
+            setTimeout(() => {
+                btn.classList.remove('copied');
+                btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px">content_copy</span> 复制互动话术';
+            }, 2000);
+        });
+    }
+
+    // ============ CONTENT CHECK (Compliance + Dedup) ============
+    const violationWords = {
+        absolute: {
+            label: '绝对化用语',
+            level: 'danger',
+            words: ['最', '第一', '极致', '顶级', '唯一', '绝无仅有', '史上最', '全网最', 'No.1', '冠军', '之王', '最佳', '最好', '最强', '最优', '首选', '独一无二']
+        },
+        exaggerate: {
+            label: '夸大宣传',
+            level: 'danger',
+            words: ['100%', '永不', '万能', '神器', '秒杀', '碾压', '吊打', '完胜', '零差评', '无副作用', '包治', '根治']
+        },
+        medical: {
+            label: '医疗/功效暗示',
+            level: 'danger',
+            words: ['治疗', '治愈', '药用', '消炎', '抗菌', '医学', '临床', '处方']
+        },
+        sensitive: {
+            label: '敏感引导词',
+            level: 'warning',
+            words: ['必买', '必入', '不买后悔', '断货', '最后一批', '限量抢', '再不买就没了', '跪求', '求求']
+        },
+        comparison: {
+            label: '不当比较',
+            level: 'warning',
+            words: ['比XX好', '吊打大牌', '平替', '完爆', '秒杀正品', '比专柜好']
+        }
+    };
+
+    function runContentCheck() {
+        const container = document.getElementById('contentCheckResult');
+        container.style.display = 'block';
+
+        // Combine all note content for scanning
+        const allContent = generatedNotes.map(n => n.title + ' ' + n.body + ' ' + n.tags.join(' ')).join(' ');
+
+        // Scan for violations
+        let violations = [];
+        for (const [category, config] of Object.entries(violationWords)) {
+            for (const word of config.words) {
+                if (allContent.includes(word)) {
+                    violations.push({
+                        word: word,
+                        category: config.label,
+                        level: config.level
+                    });
+                }
+            }
+        }
+
+        // Build check result HTML
+        let complianceHTML = '';
+        if (violations.length === 0) {
+            complianceHTML = `
+                <div class="check-pass">
+                    <span class="material-symbols-outlined" style="font-size:18px">check_circle</span>
+                    内容合规检查通过，未发现违规词汇 ✅
+                </div>
+            `;
+        } else {
+            complianceHTML = `
+                <ul class="violation-list">
+                    ${violations.map(v => `
+                        <li class="${v.level}">
+                            <span class="violation-word">${v.word}</span>
+                            <span>${v.category} — ${v.level === 'danger' ? '⚠️ 高风险，建议删除或替换' : '💡 中风险，建议谨慎使用'}</span>
+                        </li>
+                    `).join('')}
+                </ul>
+                <p style="font-size:12px;color:var(--text-light);margin-top:10px;line-height:1.6;">
+                    💡 建议：将绝对化用语替换为程度词（如"超级""很""非常"），避免被平台限流或标记违规。
+                </p>
+            `;
+        }
+
+        // Title length check
+        let titleWarnings = [];
+        generatedNotes.forEach((note, idx) => {
+            const len = [...note.title].length;
+            if (len > 20) {
+                titleWarnings.push(`笔记${idx + 1}标题（${len}字）超出20字限制，请精简`);
+            }
+        });
+
+        let titleCheckHTML = '';
+        if (titleWarnings.length === 0) {
+            titleCheckHTML = `
+                <div class="check-pass">
+                    <span class="material-symbols-outlined" style="font-size:18px">check_circle</span>
+                    所有标题均在 20 字以内 ✅
+                </div>
+            `;
+        } else {
+            titleCheckHTML = `
+                <ul class="violation-list">
+                    ${titleWarnings.map(w => `<li class="danger"><span>⚠️ ${w}</span></li>`).join('')}
+                </ul>
+            `;
+        }
+
+        container.innerHTML = `
+            <div class="check-module">
+                <div class="check-module-title">
+                    <span class="material-symbols-outlined" style="color:var(--primary)">verified_user</span>
+                    内容检测
+                </div>
+
+                <div class="check-section">
+                    <h4>
+                        <span class="material-symbols-outlined" style="font-size:16px;color:#E65100">text_fields</span>
+                        标题字数检查
+                    </h4>
+                    ${titleCheckHTML}
+                </div>
+
+                <div class="check-section">
+                    <h4>
+                        <span class="material-symbols-outlined" style="font-size:16px;color:#C62828">gavel</span>
+                        合规检查（违规词扫描）
+                    </h4>
+                    <p style="margin-bottom:8px;font-size:12px;color:var(--text-light);">
+                        自动检测小红书平台常见违规词汇：绝对化用语、夸大宣传、医疗暗示、敏感引导等
+                    </p>
+                    ${complianceHTML}
+                </div>
+
+                <div class="check-section">
+                    <h4>
+                        <span class="material-symbols-outlined" style="font-size:16px;color:#6A1B9A">content_copy</span>
+                        查重提醒
+                    </h4>
+                    <div class="dedup-tips">
+                        <p>⚠️ 发布前请确认以下查重事项：</p>
+                        <ul>
+                            <li>检查标题是否与自己已发布的笔记重复/高度相似</li>
+                            <li>在小红书搜索栏输入标题关键词，查看是否有大量雷同内容</li>
+                            <li>正文核心段落不要与往期笔记复制粘贴，平台会判定为搬运</li>
+                            <li>同一产品多次发布时，切换不同角度和表达方式</li>
+                            <li>建议每条笔记至少修改 30% 以上的文案，避免内容重复率过高</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // ============ STEP HOOKS ============
+    const originalGoToStep = goToStep;
+    goToStep = function(step) {
+        originalGoToStep(step);
+        if (step === 4) renderCoverSuggestions();
+        if (step === 5) renderStrategy();
+    };
+
+    // ============ RESET ============
+    function resetAll() {
+        document.getElementById('productName').value = '';
+        document.getElementById('priceMin').value = '';
+        document.getElementById('priceMax').value = '';
+        document.getElementById('customPoint').value = '';
+        document.querySelectorAll('.tag-chip.selected').forEach(c => c.classList.remove('selected'));
+        selectedHotWords = [];
+        selectedActivities = [];
+        generatedNotes = [];
+        document.getElementById('notesResult').innerHTML = '';
+        document.getElementById('contentCheckResult').innerHTML = '';
+        document.getElementById('contentCheckResult').style.display = 'none';
+        document.getElementById('coverResult').innerHTML = '';
+        document.getElementById('strategyResult').innerHTML = '';
+        goToStep(1);
+        showToast('已重置，开始新一轮选品 🎉');
+    }
+
+    // ============ TOAST ============
+    function showToast(msg) {
+        const toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2500);
+    }
+    </script>
+</body>
+</html>
