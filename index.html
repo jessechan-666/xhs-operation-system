@@ -399,6 +399,12 @@
             transition: var(--transition);
             border: 1.5px solid transparent;
             background: var(--bg-main);
+            gap: 10px;
+        }
+
+        .hot-item.compact {
+            padding: 10px 12px;
+            align-items: flex-start;
         }
 
         .hot-item:hover {
@@ -435,9 +441,91 @@
         }
 
         .hot-text {
-            flex: 1;
+            flex: 1 1 auto;
+            min-width: 0;
             font-size: 14px;
+            font-weight: 500;
             color: var(--text-primary);
+            line-height: 1.45;
+            white-space: normal;
+            overflow: visible;
+            text-overflow: clip;
+            word-break: break-all;
+            display: block;
+        }
+
+        .hot-main {
+            flex: 1 1 auto;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            overflow: visible;
+            padding-right: 8px;
+        }
+
+        .note-keyword-actions {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed rgba(255, 107, 138, 0.18);
+        }
+
+        .note-keyword-actions-title {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .note-keyword-action-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 107, 138, 0.08);
+        }
+
+        .note-keyword-action-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .note-keyword-action-word {
+            font-size: 13px;
+            color: var(--text-primary);
+            white-space: nowrap;
+        }
+
+        .note-keyword-action-ops {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            justify-content: flex-end;
+        }
+
+        .note-usage-chip {
+            border: 1px solid rgba(255, 107, 138, 0.18);
+            background: white;
+            color: var(--text-secondary);
+            border-radius: 999px;
+            font-size: 12px;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .note-usage-chip.active {
+            background: rgba(255, 107, 138, 0.14);
+            color: var(--primary-dark);
+            border-color: rgba(255, 107, 138, 0.34);
+        }
+
+        .hot-meta {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-left: auto;
+            flex-shrink: 0;
+            min-width: 152px;
         }
 
         .hot-heat {
@@ -446,11 +534,141 @@
             background: var(--bg-main);
             padding: 2px 8px;
             border-radius: 10px;
+            min-width: 62px;
+            text-align: center;
         }
 
-        .hot-item.selected .hot-heat {
+        .hot-trend {
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            background: #FFF1F4;
+            color: var(--primary-dark);
+            white-space: nowrap;
+            min-width: 72px;
+            text-align: right;
+        }
+
+        .hot-item.selected .hot-heat,
+        .hot-item.selected .hot-trend {
             background: white;
             color: var(--primary);
+        }
+
+        .keyword-board-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .keyword-board {
+            padding: 14px;
+            border-radius: var(--radius-md);
+            background: var(--bg-main);
+            border: 1px solid rgba(255, 107, 138, 0.12);
+        }
+
+        .keyword-board-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .keyword-board-subtitle {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .keyword-board .hot-item {
+            margin-bottom: 6px;
+            padding: 10px 12px;
+            background: white;
+        }
+
+        .keyword-board .hot-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .keyword-board-toggle {
+            margin-top: 10px;
+            width: 100%;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255, 107, 138, 0.08);
+            color: var(--primary-dark);
+            font-size: 13px;
+            font-weight: 600;
+            padding: 10px 12px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .keyword-board-toggle:hover {
+            background: rgba(255, 107, 138, 0.14);
+        }
+
+        .keyword-board-empty {
+            font-size: 12px;
+            color: var(--text-light);
+            padding: 8px 0;
+        }
+
+        .note-source-keywords {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 14px 0 2px;
+        }
+
+        .note-source-chip {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            font-size: 12px;
+            padding: 4px 10px;
+            border-radius: 999px;
+        }
+
+        .note-reference-summary {
+            margin-top: 16px;
+            padding: 14px;
+            border-radius: var(--radius-md);
+            background: linear-gradient(180deg, #EEF7FF 0%, #F8FBFF 100%);
+            border: 1px solid rgba(90, 143, 255, 0.18);
+        }
+
+        .note-reference-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #3566C8;
+        }
+
+        .note-reference-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .note-reference-badge {
+            font-size: 12px;
+            line-height: 1;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: rgba(90, 143, 255, 0.12);
+            color: #2F63C7;
+        }
+
+        .note-reference-badge.scene {
+            background: rgba(84, 187, 160, 0.14);
+            color: #23876A;
         }
 
         /* Category Tabs */
@@ -1590,6 +1808,15 @@
         <div class="step-panel" id="step2">
             <div class="card">
                 <div class="card-title">
+                    <span class="material-symbols-outlined">dashboard</span>
+                    四类关键词总览
+                </div>
+                <div class="card-desc">已同步推荐词、热搜词、蓝海词、飙升词，点击任意词条即可加入内容生成引用池。</div>
+                <div class="keyword-board-grid" id="keywordBoards"></div>
+            </div>
+
+            <div class="card">
+                <div class="card-title">
                     <span class="material-symbols-outlined">local_fire_department</span>
                     饰品类热搜词 TOP10
                 </div>
@@ -1761,14 +1988,24 @@
     // ============ STATE ============
     let currentStep = 1;
     let currentView = 'main';
-    let selectedHotWords = [];
+    let selectedHotWords = {};
     let selectedActivities = [];
     let currentCategory = 'earring';
     let generatedNotes = [];
+    let keywordBoardExpanded = {
+        recommended: false,
+        hot_search: false,
+        blue_ocean: false,
+        rising: false
+    };
+    let recommendedData = [];
+    let blueOceanData = [];
+    let risingData = [];
 
     // ============ INIT: Load external data ============
     document.addEventListener('DOMContentLoaded', async () => {
         await loadExternalData();
+        renderKeywordOverview();
         renderHotSearch('earring');
         renderActivities();
         initTagChips();
@@ -1788,21 +2025,36 @@
     }
 
     async function loadKeywordsData(ts) {
+        const candidateUrls = [
+            './github_actions/keywords.json?t=' + ts,
+            './keywords.json?t=' + ts
+        ];
         try {
-            const kwRes = await fetch('./keywords.json?t=' + ts);
-            if (kwRes.ok) {
-                const kwData = await kwRes.json();
-                hotSearchData = kwData.hot_search || {};
-                activities = kwData.activities || [];
-                const statusEl = document.getElementById('dataStatus');
-                const timeEl = document.getElementById('dataUpdateTime');
-                statusEl.style.display = 'block';
-                timeEl.textContent = '数据已同步：' + (kwData.updated_at || '未知');
-                setTimeout(() => { statusEl.style.opacity = '0'; statusEl.style.transition = 'opacity 0.5s'; }, 4000);
-                setTimeout(() => { statusEl.style.display = 'none'; }, 4500);
-                return;
+            let kwData = null;
+            let lastStatus = 'unknown';
+            for (const url of candidateUrls) {
+                const kwRes = await fetch(url);
+                if (kwRes.ok) {
+                    kwData = await kwRes.json();
+                    break;
+                }
+                lastStatus = kwRes.status;
             }
-            throw new Error('keywords.json http ' + kwRes.status);
+            if (!kwData) {
+                throw new Error('keywords.json http ' + lastStatus);
+            }
+            recommendedData = kwData.recommended || [];
+            hotSearchData = kwData.hot_search || {};
+            blueOceanData = kwData.blue_ocean || [];
+            risingData = kwData.rising || [];
+            activities = kwData.activities || [];
+            const statusEl = document.getElementById('dataStatus');
+            const timeEl = document.getElementById('dataUpdateTime');
+            statusEl.style.display = 'block';
+            timeEl.textContent = '数据已同步：' + (kwData.updated_at || '未知');
+            setTimeout(() => { statusEl.style.opacity = '0'; statusEl.style.transition = 'opacity 0.5s'; }, 4000);
+            setTimeout(() => { statusEl.style.display = 'none'; }, 4500);
+            return;
         } catch (e) {
             console.warn('keywords.json 加载失败，使用默认数据', e);
             loadFallbackKeywords();
@@ -1847,25 +2099,40 @@
 
     function loadFallbackKeywords() {
         // Fallback data if fetch fails
+        recommendedData = [
+            { text: '钻石耳钉', heat: '12.2w+', trend: '↑2.07%' },
+            { text: '耳骨钉耳饰推荐', heat: '11.9w+', trend: '↓3.85%' },
+            { text: '养耳洞耳钉', heat: '11.0w+', trend: '↑6.27%' }
+        ];
         hotSearchData = {
             earring: [
-                { text: '耳夹合集 无耳洞女生必入', heat: '12.8w' },
-                { text: '显脸小耳饰推荐', heat: '9.6w' },
-                { text: '夏天戴什么耳环好看', heat: '8.3w' },
-                { text: '平价耳钉合集 学生党', heat: '7.5w' },
-                { text: '珍珠耳环 温柔气质', heat: '6.9w' }
+                { text: '耳夹合集 无耳洞女生必入', heat: '12.8w', trend: '↑8.60%' },
+                { text: '显脸小耳饰推荐', heat: '9.6w', trend: '↑6.20%' },
+                { text: '夏天戴什么耳环好看', heat: '8.3w', trend: '↑3.10%' },
+                { text: '平价耳钉合集 学生党', heat: '7.5w', trend: '持平' },
+                { text: '珍珠耳环 温柔气质', heat: '6.9w', trend: '↓1.20%' }
             ],
             ring: [
-                { text: '叠戴戒指搭配教程', heat: '8.2w' },
-                { text: '平价开口戒推荐', heat: '7.1w' },
-                { text: '显手白戒指合集', heat: '6.5w' }
+                { text: '叠戴戒指搭配教程', heat: '8.2w', trend: '↑9.10%' },
+                { text: '平价开口戒推荐', heat: '7.1w', trend: '↑7.40%' },
+                { text: '显手白戒指合集', heat: '6.5w', trend: '↑5.60%' }
             ],
             necklace: [
-                { text: '锁骨链推荐 显瘦', heat: '10.1w' },
-                { text: '叠戴项链 时髦穿搭', heat: '8.7w' },
-                { text: '珍珠项链 温柔气质', heat: '7.3w' }
+                { text: '锁骨链推荐 显瘦', heat: '10.1w', trend: '↑8.40%' },
+                { text: '叠戴项链 时髦穿搭', heat: '8.7w', trend: '↑6.80%' },
+                { text: '珍珠项链 温柔气质', heat: '7.3w', trend: '↑5.10%' }
             ]
         };
+        blueOceanData = [
+            { text: '耳钉推荐位置', heat: '8.39w+', trend: '↓19.28%' },
+            { text: '耳骨钉多少mm合适', heat: '7.95w+', trend: '↑3.78%' },
+            { text: '黄金耳骨钉', heat: '7.82w+', trend: '↓1.75%' }
+        ];
+        risingData = [
+            { text: '求推荐耳钉', heat: '6.02w+', trend: '↑6300.00%' },
+            { text: '银灰耳饰', heat: '5.88w+', trend: '↑544.44%' },
+            { text: '适合送人的耳饰品牌', heat: '6.09w+', trend: '↑191.30%' }
+        ];
         activities = [
             { icon: '🎋', name: '七夕情人节', desc: '浪漫饰品送礼季', color: '#FFE4EC' },
             { icon: '🎓', name: '开学季', desc: '学生党平价饰品', color: '#E8F5E9' },
@@ -1910,31 +2177,121 @@
         });
     }
 
-    // ============ HOT SEARCH ============
+    function getCategoryHotPool() {
+        return [
+            ...(hotSearchData.earring || []),
+            ...(hotSearchData.ring || []),
+            ...(hotSearchData.necklace || [])
+        ];
+    }
+
+    function getKeywordSourcePools() {
+        return {
+            recommended: recommendedData || [],
+            hot_search: getCategoryHotPool(),
+            blue_ocean: blueOceanData || [],
+            rising: risingData || []
+        };
+    }
+
+    function getDefaultKeywordPool() {
+        const pools = [recommendedData, blueOceanData, risingData, getCategoryHotPool()];
+        for (const pool of pools) {
+            if (Array.isArray(pool) && pool.length) {
+                return pool.map(item => item.text).filter(Boolean);
+            }
+        }
+        return ['饰品推荐'];
+    }
+
+    function getKeywordUsage(word) {
+        return selectedHotWords[word] || { title: false, body: false, tag: false };
+    }
+
+    function isKeywordSelected(word) {
+        return !!selectedHotWords[word];
+    }
+
+    function getNoteKeywordUsage(note, word) {
+        return note.keywordUsage?.[word] || { title: false, body: false, tag: false };
+    }
+
+    function escapeJsString(str) {
+        return String(str).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    }
+
+    function renderKeywordItem(item, i) {
+        const selected = isKeywordSelected(item.text);
+        return `
+            <div class="hot-item compact ${selected ? 'selected' : ''}" onclick="toggleHotWord(event, '${escapeJsString(item.text)}')">
+                <div class="hot-rank ${i < 3 ? 'top3' : 'normal'}">${i + 1}</div>
+                <div class="hot-main" title="${item.text}">
+                    <div class="hot-text">${item.text}</div>
+                </div>
+                <div class="hot-meta">
+                    <div class="hot-heat">${item.heat || '—'}</div>
+                    <div class="hot-trend">${item.trend || '持平'}</div>
+                </div>
+            </div>
+        `;
+    }
+
+    function renderKeywordOverview() {
+        const container = document.getElementById('keywordBoards');
+        if (!container) return;
+        const boardMap = [
+            { key: 'recommended', title: '推荐词', subtitle: '推荐流量灵感池', list: recommendedData },
+            { key: 'hot_search', title: '热搜词', subtitle: '页面热度入口词', list: getCategoryHotPool() },
+            { key: 'blue_ocean', title: '蓝海词', subtitle: '低竞争机会词', list: blueOceanData },
+            { key: 'rising', title: '飙升词', subtitle: '近期涨势最快', list: risingData }
+        ];
+
+        container.innerHTML = boardMap.map(board => {
+            const expanded = !!keywordBoardExpanded[board.key];
+            const displayList = (board.list || []).slice(0, expanded ? 10 : 5);
+            const rows = displayList.map((item, i) => renderKeywordItem(item, i)).join('') || '<div class="keyword-board-empty">暂无数据</div>';
+            const toggleBtn = (board.list || []).length > 5 ? `
+                <button class="keyword-board-toggle" onclick="toggleKeywordBoard('${board.key}')">
+                    ${expanded ? '收起' : '展开更多'}
+                </button>
+            ` : '';
+            return `
+                <div class="keyword-board">
+                    <div class="keyword-board-title">
+                        <span>${board.title}</span>
+                        <span class="keyword-board-subtitle">${board.subtitle}</span>
+                    </div>
+                    ${rows}
+                    ${toggleBtn}
+                </div>
+            `;
+        }).join('');
+    }
+
+    function toggleKeywordBoard(boardKey) {
+        keywordBoardExpanded[boardKey] = !keywordBoardExpanded[boardKey];
+        renderKeywordOverview();
+    }
+
+    // ============ HOT SEARCH ==========
     function renderHotSearch(category) {
         const container = document.getElementById('hotSearchList');
-        const data = hotSearchData[category];
-        container.innerHTML = data.map((item, i) => `
-            <div class="hot-item ${selectedHotWords.includes(item.text) ? 'selected' : ''}" 
-                 onclick="toggleHotWord(this, '${item.text}')">
-                <div class="hot-rank ${i < 3 ? 'top3' : 'normal'}">${i + 1}</div>
-                <div class="hot-text">${item.text}</div>
-                <div class="hot-heat">${item.heat}</div>
-            </div>
-        `).join('');
+        const data = hotSearchData[category] || [];
+        container.innerHTML = data.map((item, i) => renderKeywordItem(item, i)).join('');
     }
 
-    function toggleHotWord(el, word) {
-        el.classList.toggle('selected');
-        const idx = selectedHotWords.indexOf(word);
-        if (idx > -1) {
-            selectedHotWords.splice(idx, 1);
+    function toggleHotWord(event, word) {
+        if (event) event.stopPropagation();
+        if (selectedHotWords[word]) {
+            delete selectedHotWords[word];
         } else {
-            selectedHotWords.push(word);
+            selectedHotWords[word] = true;
         }
+        renderKeywordOverview();
+        renderHotSearch(currentCategory);
     }
 
-    // ============ ACTIVITIES ============
+    // ============ ACTIVITIES ==========
     function renderActivities() {
         const container = document.getElementById('activityList');
         container.innerHTML = activities.map(act => `
@@ -2142,26 +2499,25 @@
 
     function buildNotes() {
         const form = getFormData();
-        const hotWords = selectedHotWords.length > 0 ? selectedHotWords : ['饰品推荐'];
+        const selectedWords = Object.keys(selectedHotWords || {});
+        const defaultWords = getDefaultKeywordPool().slice(0, 3);
+        const hotWords = selectedWords.length > 0 ? selectedWords : defaultWords;
         const acts = selectedActivities.length > 0 ? selectedActivities : ['日常穿搭'];
-        
+        const sourceKeywords = selectedWords.length > 0 ? selectedWords.slice(0, 5) : defaultWords;
+
         const priceTag = `${form.priceMin}-${form.priceMax}元`;
         const pointsStr = form.points.join('、') || '精致好看';
         const audienceStr = form.audience.join('/') || '爱美女生';
-        const mainHot = hotWords[0] || '耳饰推荐';
         const mainAct = acts[0] || '日常';
 
-        // Helper: truncate title to 20 chars
         function trimTitle(title) {
             const chars = [...title];
             if (chars.length <= 20) return title;
             return chars.slice(0, 19).join('') + '…';
         }
 
-        // Short product name for titles
         const shortName = form.name.length > 6 ? form.name.slice(0, 5) : form.name;
 
-        // Template variable replacer
         function fillTemplate(tpl) {
             return tpl
                 .replace(/\{productName\}/g, form.name)
@@ -2170,7 +2526,7 @@
                 .replace(/\{priceRange\}/g, priceTag)
                 .replace(/\{audience\}/g, audienceStr)
                 .replace(/\{activity\}/g, mainAct)
-                .replace(/\{hook\}/g, '') // hook is replaced separately
+                .replace(/\{hook\}/g, '')
                 .replace(/\{hotword1\}/g, hotWords[0] || '饰品推荐')
                 .replace(/\{hotword2\}/g, hotWords[1] || '耳饰合集')
                 .replace(/\{hotword3\}/g, hotWords[2] || '平价好物')
@@ -2178,9 +2534,35 @@
                 .replace(/\{audience1\}/g, form.audience[0] || '爱美女生');
         }
 
-        // Pick random item from array
         function pick(arr) {
             return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function injectKeywordIntoTitle(baseTitle, keyword) {
+            if (!keyword || baseTitle.includes(keyword)) return trimTitle(baseTitle);
+            return trimTitle(`${keyword}｜${baseTitle}`);
+        }
+
+        function buildKeywordNarrative(keywordBundle, dir) {
+            if (!keywordBundle || keywordBundle.length === 0) return '';
+            const primary = keywordBundle[0] || '饰品推荐';
+            const secondary = keywordBundle[1] || keywordBundle[0] || '耳饰灵感';
+            const tertiary = keywordBundle[2] || '';
+            const firstLine = dir === 'gift'
+                ? `最近看到「${primary}」和${mainAct}相关内容一直在涨，我第一反应就是这款${form.name}拿来送人很有记忆点。`
+                : dir === 'visual'
+                    ? `这阵子刷到「${primary}」相关内容的频率特别高，我发现这款${form.name}上身后确实很容易把穿搭氛围感拉满。`
+                    : `最近很多人在搜「${primary}」，我自己试戴完这款${form.name}后，终于理解它为什么能被反复提到。`;
+            const secondLine = tertiary
+                ? `而且像「${secondary}」和「${tertiary}」这类词也在一起上涨，说明大家不只是看颜值，还会在意佩戴舒适度和搭配场景。`
+                : `同时「${secondary}」这类词也很活跃，说明大家关注的已经不只是好不好看，还包括好不好搭、适不适合日常戴。`;
+            return `${firstLine}\n${secondLine}`;
+        }
+
+        function injectKeywordIntoBody(baseBody, keywordBundle, dir) {
+            const narrative = buildKeywordNarrative(keywordBundle, dir);
+            if (!narrative) return baseBody;
+            return baseBody ? `${narrative}\n\n${baseBody}` : narrative;
         }
 
         const directions = ['pain', 'visual', 'gift'];
@@ -2191,7 +2573,6 @@
             let title, body, tags;
 
             if (templates && templates.title_formulas && templates.body_templates) {
-                // Use external templates
                 const titleFormula = pick(templates.title_formulas[dir] || []);
                 title = trimTitle(fillTemplate(titleFormula || ''));
 
@@ -2204,18 +2585,31 @@
                 const tagTpl = templates.tag_templates?.[dir] || [];
                 tags = tagTpl.map(t => fillTemplate(t)).slice(0, 10);
             } else {
-                // Fallback hardcoded templates
                 title = trimTitle(buildFallbackTitle(dir, shortName, mainAct));
-                body = buildFallbackBody(dir, form.name, pointsStr, priceTag, audienceStr, mainAct);
+                body = buildFallbackBody(dir, form.name, pointsStr, priceTag, audienceStr, mainAct, hotWords);
                 tags = buildFallbackTags(dir, hotWords, form.name, pointsStr, audienceStr, mainAct, priceTag);
             }
+
+            const primaryTitleKeyword = '';
+            const bodyKeywordBundle = [];
+            const mergedTags = tags || [];
+
+            title = injectKeywordIntoTitle(title, primaryTitleKeyword);
+            body = injectKeywordIntoBody(body, bodyKeywordBundle, dir);
+            tags = [...new Set(mergedTags)].slice(0, 8);
 
             notes.push({
                 direction: dir,
                 dirLabel: dirLabels[dir],
                 title,
                 body,
-                tags
+                tags,
+                baseTitle: title,
+                baseBody: body,
+                baseTags: [...new Set(mergedTags)].slice(0, 8),
+                sourceKeywords,
+                sourceActivities: acts,
+                keywordUsage: Object.fromEntries(sourceKeywords.map(word => [word, { title: false, body: false, tag: false }]))
             });
         }
 
@@ -2232,22 +2626,96 @@
         return titles[dir];
     }
 
-    function buildFallbackBody(dir, name, points, price, audience, act) {
+    function buildFallbackBody(dir, name, points, price, audience, act, hotWords = []) {
+        const primary = hotWords[0] || '饰品推荐';
+        const secondary = hotWords[1] || '耳饰搭配';
         const bodies = {
-            pain: `姐妹们！谁懂啊！！！\n没有耳洞但又超想戴好看的耳饰！\n\n之前买过很多耳夹，要么夹得耳朵疼💀\n要么戴一会就掉了...\n\n直到我发现了这款【${name}】！\n✅ ${points}\n✅ 戴一整天都不会疼\n✅ 价格才${price}，真的太香了\n\n${audience}冲它就对了！\n评论区告诉我你们想看什么款式？`,
-            visual: `最近发现一个穿搭小心机💡\n选对耳饰真的可以修饰脸型！！\n\n这款【${name}】我必须安利给所有人！\n\n🌟 上脸效果：\n${points}，质感满满\n\n🌟 搭配建议：\n· 白T + 牛仔裤 → 日常减龄\n· 衬衫 + 西裤 → 通勤精致\n\n价格${price}，性价比超高！\n${audience}闭眼入就对了～`,
-            gift: `${act}快到了！还在纠结送什么礼物？\n\n这款【${name}】绝对是送礼天花板🎀\n\n💝 为什么推荐：\n· ${points}，送谁都不会出错\n· 包装精致，超有仪式感\n· ${price}的价格，看起来不止这个价！\n\n${audience}收到都会开心😍\n评论区一起讨论～`
+            pain: `最近很多人都在搜「${primary}」，我自己试完这款【${name}】后真的很想说一句：没有耳洞也能安心戴好看的耳饰！
+
+之前买过很多耳夹，要么夹得耳朵疼💀，要么戴一会就掉了。
+
+但这款让我改观的点很明显：
+✅ ${points}
+✅ 戴一整天都不会疼
+✅ 价格才${price}，真的很适合日常入手
+
+而且像「${secondary}」这类词最近也很热，说明大家真的越来越在意佩戴体验。
+${audience}冲它就对了！`,
+            visual: `最近刷到「${primary}」相关内容特别多，我才认真试了这款【${name}】。
+
+它最大的优势不是单看多夸张，而是戴上以后会让整体穿搭更完整。
+
+🌟 上脸效果：
+${points}，质感满满
+
+🌟 搭配建议：
+· 白T + 牛仔裤 → 日常减龄
+· 衬衫 + 西裤 → 通勤精致
+
+再结合「${secondary}」这类热词去看，会发现这类饰品确实很适合做造型点睛。
+价格${price}，${audience}闭眼入就对了～`,
+            gift: `${act}快到了，最近连「${primary}」这类词都在持续往上走。
+
+如果你也在纠结送什么礼物，这款【${name}】真的很值得放进备选。
+
+💝 为什么推荐：
+· ${points}，送谁都不会出错
+· 包装精致，超有仪式感
+· ${price}的价格，看起来不止这个价
+
+再加上「${secondary}」这类趋势词也在发酵，这种有氛围感的小饰品本身就很适合送礼场景。
+${audience}收到都会开心😍`
         };
         return bodies[dir];
     }
 
     function buildFallbackTags(dir, hotWords, name, points, audience, act, price) {
         const tagSets = {
-            pain: [...hotWords.slice(0, 3), name, '耳夹推荐', '无耳洞', points.split('、')[0], audience.split('/')[0], '平价饰品', price + '好物'],
-            visual: [...hotWords.slice(0, 3), name, '显脸小', '穿搭搭配', '气质耳饰', audience.split('/')[0], act, '每日穿搭'],
-            gift: [...hotWords.slice(0, 2), name, act + '礼物', '送礼推荐', '女生礼物', '闺蜜礼物', '仪式感', audience.split('/')[0], '精致生活']
+            pain: [name, '耳夹推荐', '无耳洞', points.split('、')[0], audience.split('/')[0], '平价饰品', price + '好物'],
+            visual: [name, '显脸小', '穿搭搭配', '气质耳饰', audience.split('/')[0], act, '每日穿搭'],
+            gift: [name, act + '礼物', '送礼推荐', '女生礼物', '闺蜜礼物', '仪式感', audience.split('/')[0], '精致生活']
         };
         return tagSets[dir].slice(0, 10);
+    }
+
+    function applyKeywordUsageToNote(note) {
+        let title = note.baseTitle || note.title;
+        let body = note.baseBody || note.body;
+        let tags = [...(note.baseTags || note.tags || [])];
+        const usageMap = note.keywordUsage || {};
+
+        Object.entries(usageMap).forEach(([word, usage]) => {
+            if (usage.title && !title.includes(word)) {
+                title = trimGeneratedTitle(`${word}｜${title}`);
+            }
+            if (usage.body && !body.includes(word)) {
+                body = `最近看到「${word}」这类词的讨论度一直在走高，所以我会更关注这款内容在真实场景里的表达。\n\n${body}`;
+            }
+            if (usage.tag && !tags.includes(word)) {
+                tags.push(word);
+            }
+        });
+
+        note.title = title;
+        note.body = body;
+        note.tags = [...new Set(tags)].slice(0, 10);
+        return note;
+    }
+
+    function trimGeneratedTitle(title) {
+        const chars = [...title];
+        if (chars.length <= 20) return title;
+        return chars.slice(0, 19).join('') + '…';
+    }
+
+    function toggleNoteKeywordUsage(noteIdx, word, usageKey) {
+        const note = generatedNotes[noteIdx];
+        if (!note) return;
+        const current = getNoteKeywordUsage(note, word);
+        note.keywordUsage = note.keywordUsage || {};
+        note.keywordUsage[word] = { ...current, [usageKey]: !current[usageKey] };
+        applyKeywordUsageToNote(note);
+        renderNotes();
     }
 
     function renderNotes() {
@@ -2264,6 +2732,7 @@
         };
 
         container.innerHTML = generatedNotes.map((note, idx) => {
+            applyKeywordUsageToNote(note);
             const titleLen = [...note.title].length;
             let counterClass = 'ok';
             if (titleLen > 20) counterClass = 'over';
@@ -2279,6 +2748,36 @@
                     <span class="title-counter ${counterClass}">${titleLen}/20字</span>
                 </div>
                 <div class="note-body">${note.body}</div>
+                <div class="note-reference-summary">
+                    <div class="note-reference-title">
+                        <span class="material-symbols-outlined" style="font-size:16px">analytics</span>
+                        引用总结
+                    </div>
+                    <div class="note-reference-row">
+                        ${(note.sourceKeywords || []).map(word => `<span class="note-reference-badge">引用词：${word}</span>`).join('')}
+                    </div>
+                    <div class="note-reference-row">
+                        ${(note.sourceActivities || []).map(scene => `<span class="note-reference-badge scene">场景：${scene}</span>`).join('')}
+                    </div>
+                    ${(note.sourceKeywords || []).length ? `
+                        <div class="note-keyword-actions">
+                            <div class="note-keyword-actions-title">生成后再决定这些词如何使用：</div>
+                            ${(note.sourceKeywords || []).map(word => {
+                                const usage = getNoteKeywordUsage(note, word);
+                                return `
+                                    <div class="note-keyword-action-item">
+                                        <div class="note-keyword-action-word">${word}</div>
+                                        <div class="note-keyword-action-ops">
+                                            <button class="note-usage-chip ${usage.title ? 'active' : ''}" onclick="toggleNoteKeywordUsage(${idx}, '${escapeJsString(word)}', 'title')">加入标题</button>
+                                            <button class="note-usage-chip ${usage.body ? 'active' : ''}" onclick="toggleNoteKeywordUsage(${idx}, '${escapeJsString(word)}', 'body')">加入正文</button>
+                                            <button class="note-usage-chip ${usage.tag ? 'active' : ''}" onclick="toggleNoteKeywordUsage(${idx}, '${escapeJsString(word)}', 'tag')">加入标签</button>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    ` : ''}
+                </div>
                 <div class="note-tags">
                     ${note.tags.map(t => `<span class="note-tag">#${t}</span>`).join('')}
                 </div>
@@ -2832,7 +3331,7 @@
         document.getElementById('priceMax').value = '';
         document.getElementById('customPoint').value = '';
         document.querySelectorAll('.tag-chip.selected').forEach(c => c.classList.remove('selected'));
-        selectedHotWords = [];
+        selectedHotWords = {};
         selectedActivities = [];
         generatedNotes = [];
         document.getElementById('notesResult').innerHTML = '';
@@ -2840,6 +3339,9 @@
         document.getElementById('contentCheckResult').style.display = 'none';
         document.getElementById('coverResult').innerHTML = '';
         document.getElementById('strategyResult').innerHTML = '';
+        renderKeywordOverview();
+        renderHotSearch(currentCategory);
+        renderActivities();
         goToStep(1);
         showToast('已重置，开始新一轮选品 🎉');
     }
