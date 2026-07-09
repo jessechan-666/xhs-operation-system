@@ -2,8 +2,8 @@ name: daily-xhs-sync
 
 on:
   schedule:
-    # 每天北京时间 09:00 = UTC 01:00
-    - cron: '0 1 * * *'
+    # 每天北京时间 15:30 = UTC 07:30
+    - cron: '30 7 * * *'
   workflow_dispatch:
 
 permissions:
@@ -50,12 +50,6 @@ jobs:
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
 
-      - name: Trigger Netlify deploy hook
-        if: steps.commit_push.outputs.changed == 'true'
-        run: |
-          curl -X POST "$NETLIFY_HOOK_URL"
-        env:
-          NETLIFY_HOOK_URL: ${{ secrets.NETLIFY_HOOK_URL }}
 
       - name: Send Feishu success notification
         if: success()
@@ -70,7 +64,7 @@ jobs:
           msg = {
               "msg_type": "text",
               "content": {
-                  "text": f"【小红书饰品日报同步成功】\n仓库：jessechan-666/xhs-operation-system\n数据是否更新：{changed}\n状态：GitHub Actions 已完成，Netlify 已触发部署\n通知对象：chenjingshi.kqxs"
+                  "text": f"【小红书饰品日报同步成功】\n仓库：jessechan-666/xhs-operation-system\n数据是否更新：{changed}\n状态：GitHub Actions 已完成（GitHub Pages 将自动更新）\n通知对象：chenjingshi.kqxs"
               }
           }
           req = urllib.request.Request(
