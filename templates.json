@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-31 23:15:25",
-  "version": "v2.1-m07-m08",
+  "updated_at": "2026-09-01 20:39:11",
+  "version": "v2.1-m07-m08-m09",
   "directions": [
     {
       "id": "pain",
@@ -27,6 +27,7 @@
       "找了好久！终于有不夹耳的{shortName}了"
     ],
     "visual": [
+      "开学戴这个！{shortName}显脸小又百搭",
       "七夕送这个！{shortName}氛围感绝了",
       "暑假氛围感拉满！{shortName}太出片",
       "戴上脸小一圈❗{shortName}太绝了",
